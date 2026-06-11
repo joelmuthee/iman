@@ -492,9 +492,14 @@ function addCustomSizeRow(name = '', qty = '') {
 document.getElementById('addCustomSizeBtn')?.addEventListener('click', () => addCustomSizeRow());
 
 // Live-update the per-chart "N set" badges as the owner types quantities,
-// without collapsing the chart they're working in.
+// without collapsing the chart they're working in. Also drive each chart's
+// open/close from JS (preventDefault + flip .open) — the .stock-summary is
+// display:flex, which breaks native <details> toggling in mobile WebKit, so
+// we own the toggle instead of relying on it.
 document.querySelectorAll('.stock-details[data-stock-group]').forEach(det => {
   det.addEventListener('input', () => refreshStockGroups(false));
+  const sum = det.querySelector('summary');
+  if (sum) sum.addEventListener('click', (e) => { e.preventDefault(); det.open = !det.open; });
 });
 
 // "+ Add manually" nav link expands the (collapsed-by-default) manual form,
