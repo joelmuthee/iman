@@ -8,7 +8,7 @@
   --gold: #bf9b30;        /* regal gold — the IMAN wordmark */
   --gold-deep: #8e7020;   /* deeper gold */
   --gold-light: #e3cd8f;  /* light gold */
-  --rose: #d98aa6;        /* rose pink — the gems in the crown logo */
+  --rose: #c9748f;        /* rose pink — the gems in the crown logo (deepened for light bg) */
   --line: #eee2c4;        /* warm cream divider */
   --surface: #f4ecd9;     /* warm beige surface */
   --choco: #3a2c12;       /* mid chocolate (logo bg) */
@@ -80,33 +80,33 @@ img { max-width: 100%; display: block; }
 /* ===== NAV ===== */
 .nav {
   position: sticky; top: 0;
-  background: rgba(42,28,15,0.94);
+  background: rgba(250,246,238,0.94);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(191,155,48,0.22);
+  border-bottom: 1px solid rgba(191,155,48,0.28);
   z-index: 200;
 }
 .nav-inner {
   display: flex; align-items: center; justify-content: space-between;
   width: min(1200px, 92%); margin: 0 auto; padding: 14px 0;
 }
-.brand { display: flex; align-items: center; gap: 12px; color: #fff; }
+.brand { display: flex; align-items: center; gap: 12px; color: var(--ink); }
 .brand-logo { height: 56px; width: auto; max-width: 320px; display: block; object-fit: contain; }
 .footer-brand .brand-logo { height: 80px; max-width: 380px; }
 .nav-links { display: flex; gap: 32px; align-items: center; }
-.nav-links a { color: #f0e9d8; font-size: 14px; font-weight: 500; letter-spacing: 0.02em; transition: color 0.2s; }
-.nav-links a:hover { color: var(--gold); }
+.nav-links a { color: var(--ink-soft); font-size: 14px; font-weight: 500; letter-spacing: 0.02em; transition: color 0.2s; }
+.nav-links a:hover { color: var(--gold-deep); }
 .nav-cta { background: var(--gold); color: var(--choco-deep) !important; padding: 10px 18px; border-radius: 999px; font-weight: 600; }
 .nav-cta:hover { background: var(--gold-light); color: var(--choco-deep) !important; }
 
 .nav-toggle { display: none; background: none; border: none; cursor: pointer; width: 36px; height: 36px; flex-direction: column; justify-content: center; gap: 5px; z-index: 220; }
-.nav-toggle span { display: block; height: 2px; width: 24px; background: var(--gold-light); transition: 0.3s; }
+.nav-toggle span { display: block; height: 2px; width: 24px; background: var(--gold-deep); transition: 0.3s; }
 
 @media (max-width: 760px) {
   .nav-toggle { display: flex; }
   .nav-links {
     position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    background: var(--choco-deep); flex-direction: column; justify-content: center; align-items: center; gap: 32px;
+    background: var(--bg); flex-direction: column; justify-content: center; align-items: center; gap: 32px;
     transform: translateY(-100vh); transition: transform 0.32s ease; z-index: 210; visibility: hidden;
   }
   .nav-links.open { transform: translateY(0); visibility: visible; }
@@ -118,28 +118,31 @@ img { max-width: 100%; display: block; }
 }
 
 /* ===== HERO ===== */
+/* Light hero — the crown logo is gold + rose on white, so the site chrome is
+   warm white too (owner feedback 2026-06-11: the dark brown fought the logo). */
 .hero {
-  background: linear-gradient(135deg, #2a1c0f 0%, #3d2817 50%, #2a1c0f 100%);
-  color: #fff; text-align: center; padding: 100px 20px 110px; position: relative; overflow: hidden;
+  background: linear-gradient(135deg, #faf6ee 0%, #f4ecd9 50%, #faf6ee 100%);
+  color: var(--ink); text-align: center; padding: 100px 20px 110px; position: relative; overflow: hidden;
+  border-bottom: 1px solid var(--line);
 }
 .hero::before {
   content: ""; position: absolute; inset: 0;
   background:
-    radial-gradient(circle at 25% 35%, rgba(191,155,48,0.18), transparent 50%),
-    radial-gradient(circle at 75% 65%, rgba(191,155,48,0.10), transparent 50%);
+    radial-gradient(circle at 25% 35%, rgba(191,155,48,0.16), transparent 50%),
+    radial-gradient(circle at 75% 65%, rgba(217,138,166,0.12), transparent 50%);
   pointer-events: none;
 }
 .hero-inner { position: relative; max-width: 820px; margin: 0 auto; }
 .hero-eyebrow { font-size: 11px; letter-spacing: 0.32em; text-transform: uppercase; color: var(--rose); margin-bottom: 26px; }
 .hero-title { font-family: var(--serif); font-size: clamp(52px, 9vw, 96px); font-weight: 500; line-height: 1; letter-spacing: -0.01em; margin-bottom: 24px; }
 .hero-title em { color: var(--gold); font-style: italic; font-weight: 400; }
-.hero-sub { font-size: 18px; color: #e0d3bb; max-width: 560px; margin: 0 auto 38px; }
+.hero-sub { font-size: 18px; color: var(--ink-soft); max-width: 560px; margin: 0 auto 38px; }
 .hero-cta { display: flex; justify-content: center; gap: 14px; flex-wrap: wrap; }
 
 .btn { display: inline-block; padding: 14px 28px; border-radius: 999px; font-weight: 600; font-size: 14px; letter-spacing: 0.02em; transition: all 0.2s; cursor: pointer; border: none; font-family: inherit; }
 .btn-primary { background: var(--gold); color: var(--choco-deep); }
 .btn-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
-.btn-ghost { background: transparent; color: var(--gold-light); border: 1px solid rgba(191,155,48,0.5); }
+.btn-ghost { background: transparent; color: var(--gold-deep); border: 1px solid rgba(191,155,48,0.5); }
 .btn-ghost:hover { background: rgba(191,155,48,0.12); border-color: var(--gold); }
 
 /* ===== FILTERS ===== */
@@ -206,11 +209,18 @@ img { max-width: 100%; display: block; }
   color: var(--ink); font-weight: 600;
 }
 .cdrop-panel {
-  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 60;
+  /* The panel must NOT inherit a narrow trigger's width — size to the longest
+     option, floored at the control width, capped at the viewport (the Panache
+     width trap: a short trigger like "Jeans" clipped "All categories"). */
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 60;
+  width: max-content; min-width: max(100%, 220px); max-width: min(320px, calc(100vw - 32px));
   background: #fff; border: 1px solid var(--line); border-radius: 14px;
   box-shadow: 0 12px 30px rgba(42, 28, 15, 0.16);
   overflow: hidden;
 }
+/* The size dropdown sits on the right half of the row on mobile — anchor its
+   panel right so a wider-than-trigger panel grows inward, not off-screen. */
+#sizePills .cdrop-panel { left: auto; right: 0; }
 .cdrop-panel[hidden] { display: none; }
 .cdrop-scroll {
   max-height: 280px; overflow-y: auto; padding: 6px;
@@ -332,7 +342,7 @@ img { max-width: 100%; display: block; }
   border: 1px solid rgba(191,155,48,0.3); position: relative;
 }
 .nav-wl:hover { background: rgba(191,155,48,0.1); border-color: var(--gold); }
-.nav-wl.has-items { color: #ffb8c0; border-color: rgba(255,184,192,0.4); }
+.nav-wl.has-items { color: var(--rose); border-color: rgba(201,116,143,0.45); }
 .nav-wl .wl-count { font-size: 12px; font-weight: 700; min-width: 16px; text-align: center; }
 .nav-wl .wl-count:empty { display: none; }
 
