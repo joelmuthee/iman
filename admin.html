@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#3a2c12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=2">
+<link rel="stylesheet" href="styles.css?v=5">
 </head>
 <body style="background:#f8f6f2;">
 
@@ -421,8 +421,10 @@
         </div>
       </div>
 
-      <div class="stock-entry-group">
-        <label class="group-label">Standard</label>
+      <p class="stock-hint">Most items are <strong>One size</strong> above. Tap a size chart below only if this item comes in sizes.</p>
+
+      <details class="stock-details" data-stock-group>
+        <summary class="stock-summary">Standard letter sizes <small>(XS to 5XL)</small><span class="stock-summary-count"></span></summary>
         <div class="stock-entry-row" id="stockStandard">
           <div class="stock-entry-item"><span class="size-lbl">XS</span><input type="number" min="0" step="1" data-size="XS" class="stock-qty"></div>
           <div class="stock-entry-item"><span class="size-lbl">S</span><input type="number" min="0" step="1" data-size="S" class="stock-qty"></div>
@@ -434,10 +436,10 @@
           <div class="stock-entry-item"><span class="size-lbl">4XL</span><input type="number" min="0" step="1" data-size="4XL" class="stock-qty"></div>
           <div class="stock-entry-item"><span class="size-lbl">5XL</span><input type="number" min="0" step="1" data-size="5XL" class="stock-qty"></div>
         </div>
-      </div>
+      </details>
 
-      <div class="stock-entry-group" style="margin-top:10px;">
-        <label class="group-label">Dress sizes (UK) — dresses, suits, skirts</label>
+      <details class="stock-details" data-stock-group>
+        <summary class="stock-summary">Dress sizes (UK) <small>— dresses, suits, skirts</small><span class="stock-summary-count"></span></summary>
         <div class="stock-entry-row" id="stockNumeric">
           <div class="stock-entry-item"><span class="size-lbl">6</span><input type="number" min="0" step="1" data-size="6" class="stock-qty"></div>
           <div class="stock-entry-item"><span class="size-lbl">8</span><input type="number" min="0" step="1" data-size="8" class="stock-qty"></div>
@@ -447,10 +449,10 @@
           <div class="stock-entry-item"><span class="size-lbl">16</span><input type="number" min="0" step="1" data-size="16" class="stock-qty"></div>
           <div class="stock-entry-item"><span class="size-lbl">18</span><input type="number" min="0" step="1" data-size="18" class="stock-qty"></div>
         </div>
-      </div>
+      </details>
 
-      <div class="stock-entry-group" style="margin-top:10px;">
-        <label class="group-label">Suit sizes — tailored suits and blazers</label>
+      <details class="stock-details" data-stock-group>
+        <summary class="stock-summary">Suit sizes <small>— tailored suits and blazers</small><span class="stock-summary-count"></span></summary>
         <div class="stock-entry-row" id="stockSuits">
           <div class="stock-entry-item"><span class="size-lbl">34</span><input type="number" min="0" step="1" data-size="34" class="stock-qty"></div>
           <div class="stock-entry-item"><span class="size-lbl">36</span><input type="number" min="0" step="1" data-size="36" class="stock-qty"></div>
@@ -466,10 +468,10 @@
           <div class="stock-entry-item"><span class="size-lbl">56</span><input type="number" min="0" step="1" data-size="56" class="stock-qty"></div>
           <div class="stock-entry-item"><span class="size-lbl">58</span><input type="number" min="0" step="1" data-size="58" class="stock-qty"></div>
         </div>
-      </div>
+      </details>
 
-      <div class="stock-entry-group" style="margin-top:10px;">
-        <label class="group-label">Shoes (EU)</label>
+      <details class="stock-details" data-stock-group>
+        <summary class="stock-summary">Shoe sizes (EU) <small>— EU35 to EU46</small><span class="stock-summary-count"></span></summary>
         <div class="stock-entry-row" id="stockShoes">
           <div class="stock-entry-item"><span class="size-lbl">EU35</span><input type="number" min="0" step="1" data-size="EU35" class="stock-qty"></div>
           <div class="stock-entry-item"><span class="size-lbl">EU36</span><input type="number" min="0" step="1" data-size="EU36" class="stock-qty"></div>
@@ -484,13 +486,13 @@
           <div class="stock-entry-item"><span class="size-lbl">EU45</span><input type="number" min="0" step="1" data-size="EU45" class="stock-qty"></div>
           <div class="stock-entry-item"><span class="size-lbl">EU46</span><input type="number" min="0" step="1" data-size="EU46" class="stock-qty"></div>
         </div>
-      </div>
+      </details>
 
-      <div class="stock-entry-group" style="margin-top:10px;">
-        <label class="group-label">Custom size <small style="font-weight:400;color:#999;">— anything not above (EU 42, Free Size, 46, etc.). Add as many as you need.</small></label>
+      <details class="stock-details" data-stock-group>
+        <summary class="stock-summary">Custom size <small>— EU 42, Free Size, 46, anything else</small><span class="stock-summary-count"></span></summary>
         <div class="custom-size-rows" id="customSizeRows"></div>
         <button class="btn-admin" id="addCustomSizeBtn" type="button" style="font-size:12px;padding:6px 12px;margin-top:6px;">+ Add custom size</button>
-      </div>
+      </details>
     </div>
 
     <div class="admin-actions">
@@ -844,6 +846,6 @@
   </div>
 </div>
 
-<script src="admin.js?v=20260611domain"></script>
+<script src="admin.js?v=20260611stock"></script>
 </body>
 </html>

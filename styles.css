@@ -951,6 +951,34 @@ html { scroll-behavior: smooth; }
 .stock-entry-group { margin-bottom: 10px; }
 .stock-entry-group label.group-label { font-size: 11px; color: #999; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; display: block; margin-bottom: 6px; }
 .stock-entry-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Collapsible size charts — each scale is a native <details> so the form
+   isn't a wall of four grids. One-size stays inline above; the owner opens
+   only the chart they need. Native <details> works in in-app webviews. */
+.stock-hint { font-size: 12.5px; color: var(--ink-soft); margin: 0 0 10px; line-height: 1.5; }
+.stock-details { border: 1px solid var(--line); border-radius: 9px; margin-bottom: 8px; background: #fff; overflow: hidden; }
+.stock-details[open] { border-color: rgba(191,155,48,0.5); }
+.stock-summary {
+  list-style: none; cursor: pointer; user-select: none;
+  padding: 11px 14px; font-size: 13px; font-weight: 600; color: var(--ink);
+  display: flex; align-items: center; gap: 6px;
+}
+.stock-summary::-webkit-details-marker { display: none; }
+.stock-summary small { font-weight: 400; color: #999; }
+.stock-summary::after {
+  content: "›"; margin-left: auto; font-size: 18px; color: var(--gold-deep);
+  transform: rotate(90deg); transition: transform 0.18s ease;
+}
+.stock-details[open] .stock-summary::after { transform: rotate(-90deg); }
+.stock-summary:hover { background: rgba(191,155,48,0.06); }
+.stock-summary-count {
+  font-size: 11px; font-weight: 700; color: var(--gold-deep);
+  background: rgba(191,155,48,0.16); border-radius: 999px; padding: 2px 9px;
+}
+.stock-summary-count:empty { display: none; }
+.stock-details .stock-entry-row { padding: 4px 14px 14px; }
+.stock-details .custom-size-rows, .stock-details > #addCustomSizeBtn { margin-left: 14px; }
+.stock-details #addCustomSizeBtn { margin-bottom: 12px; }
 .stock-entry-item { display: flex; flex-direction: column; align-items: center; gap: 4px; }
 .stock-entry-item .size-lbl { font-size: 11px; font-weight: 700; color: var(--ink-soft); }
 .stock-entry-item input[type="number"] { width: 56px; text-align: center; padding: 7px 6px; font-size: 13px; }

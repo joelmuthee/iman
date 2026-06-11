@@ -443,12 +443,33 @@ function setStockToForm(stock) {
       });
     }
   }
+  // Auto-expand any size chart that has stock (so the owner sees it on edit),
+  // collapse the empty ones, and refresh the per-chart count badges.
+  refreshStockGroups(true);
 }
 
 function clearStockForm() {
   document.querySelectorAll('.stock-qty').forEach(inp => { inp.value = ''; });
   const customWrap = document.getElementById('customSizeRows');
   if (customWrap) customWrap.innerHTML = '';
+  refreshStockGroups(true);
+}
+
+// Count filled sizes in each collapsible chart, show it as a badge on the
+// summary, and (when collapseEmpty) open charts that have stock + close the rest.
+function refreshStockGroups(collapseEmpty) {
+  document.querySelectorAll('.stock-details[data-stock-group]').forEach(det => {
+    let n = 0;
+    det.querySelectorAll('.stock-qty').forEach(inp => { if (parseInt(inp.value, 10) > 0) n++; });
+    det.querySelectorAll('.custom-size-row').forEach(row => {
+      const name = row.querySelector('.custom-size-name')?.value.trim();
+      const qty = parseInt(row.querySelector('.custom-size-qty')?.value, 10);
+      if (name && qty > 0) n++;
+    });
+    const badge = det.querySelector('.stock-summary-count');
+    if (badge) badge.textContent = n ? `${n} set` : '';
+    if (collapseEmpty) det.open = n > 0;
+  });
 }
 
 // ====== CUSTOM SIZE ROWS ======
@@ -462,10 +483,16 @@ function addCustomSizeRow(name = '', qty = '') {
     <input type="number" min="0" step="1" class="custom-size-qty" placeholder="Qty" value="${qty || ''}">
     <button type="button" class="btn-admin danger custom-size-remove" aria-label="Remove">×</button>
   `;
-  row.querySelector('.custom-size-remove').addEventListener('click', () => row.remove());
+  row.querySelector('.custom-size-remove').addEventListener('click', () => { row.remove(); refreshStockGroups(false); });
   wrap.appendChild(row);
 }
 document.getElementById('addCustomSizeBtn')?.addEventListener('click', () => addCustomSizeRow());
+
+// Live-update the per-chart "N set" badges as the owner types quantities,
+// without collapsing the chart they're working in.
+document.querySelectorAll('.stock-details[data-stock-group]').forEach(det => {
+  det.addEventListener('input', () => refreshStockGroups(false));
+});
 
 // ====== AI DESCRIPTION ======
 document.getElementById('aiBtn').addEventListener('click', () => {
