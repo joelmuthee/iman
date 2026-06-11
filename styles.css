@@ -922,20 +922,28 @@ html { scroll-behavior: smooth; }
 }
 
 /* Manual entry collapses by default (IG quick-add is the primary path). The
-   divider is the <summary> toggle — clickable, with a chevron. Native
-   <details> = webview-safe, no JS dialog. */
-.manual-entry { margin: 6px 0 0; }
+   divider's centre label is a solid gold PILL BUTTON so it reads as a tappable
+   control, not a passive heading — a thin divider line + small chevron wasn't
+   conspicuous enough (owner feedback 2026-06-11). Native <details> =
+   webview-safe, no JS dialog. */
+.manual-entry { margin: 14px 0 0; }
 summary.manual-entry-divider { cursor: pointer; user-select: none; margin: 6px 0; }
 summary.manual-entry-divider::-webkit-details-marker { display: none; }
 summary.manual-entry-divider > span {
-  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+  display: inline-flex; align-items: center; gap: 9px; white-space: nowrap;
+  background: var(--gold); color: var(--choco-deep);
+  padding: 12px 24px; border-radius: 999px;
+  font-size: 13px; font-weight: 700; letter-spacing: 0.06em;
+  box-shadow: 0 3px 12px rgba(191,155,48,0.38);
+  transition: background 0.18s, transform 0.18s, box-shadow 0.18s;
 }
-summary.manual-entry-divider > span::after {
-  content: "›"; font-size: 16px; letter-spacing: 0;
-  color: var(--gold-deep); transform: rotate(90deg); transition: transform 0.18s ease;
+summary.manual-entry-divider .me-plus { transition: transform 0.2s ease; }
+.manual-entry[open] > summary.manual-entry-divider .me-plus { transform: rotate(45deg); }
+summary.manual-entry-divider:hover > span {
+  background: var(--gold-deep); transform: translateY(-1px);
+  box-shadow: 0 5px 16px rgba(191,155,48,0.5);
 }
-.manual-entry[open] > summary.manual-entry-divider > span::after { transform: rotate(-90deg); }
-summary.manual-entry-divider:hover { color: var(--gold-deep); }
+summary.manual-entry-divider:active > span { transform: translateY(0); }
 
 @media (max-width: 600px) {
   .ig-quick-add { padding: 16px; }
