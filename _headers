@@ -8,6 +8,10 @@
 # a revalidation on every load (304 when unchanged, fresh when redeployed), so
 # admin changes show up immediately. Versioned assets (admin.js?v=, styles.css?v=)
 # keep their long cache — only the HTML entry points need this.
+/
+  Cache-Control: no-cache, must-revalidate
+/index.html
+  Cache-Control: no-cache, must-revalidate
 /admin
   Cache-Control: no-cache, must-revalidate
 /admin.html
