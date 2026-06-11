@@ -504,6 +504,15 @@ document.querySelector('.admin-nav a[href="#addForm"]')?.addEventListener('click
   if (manualEntry) manualEntry.open = true;
 });
 
+// Drive the manual-entry toggle from JS, not native <details> click handling.
+// Some mobile webviews (and Safari when the <summary> ever carries display:flex)
+// won't toggle <details> on tap; flipping `.open` ourselves works everywhere.
+document.getElementById('manualEntryDivider')?.addEventListener('click', (e) => {
+  e.preventDefault();
+  const manualEntry = document.getElementById('manualEntry');
+  if (manualEntry) manualEntry.open = !manualEntry.open;
+});
+
 // ====== AI DESCRIPTION ======
 document.getElementById('aiBtn').addEventListener('click', () => {
   const name = document.getElementById('nameInput').value.trim();
