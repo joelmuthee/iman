@@ -289,13 +289,20 @@ function parseCaptionForBag(caption) {
     }
   }
 
+  // No "Pick your size below" in the default copy: most posts don't carry
+  // configured sizes, so buyers just tap Check availability and say their
+  // size in the WhatsApp chat (bags and accessories have no size at all).
+  const sized = !/^(Handbags|Accessories)$/.test(category || "");
+  const description = sized
+    ? "Brand new, hand-picked for you. Photographed exactly as it is. Tap Check availability and tell us your size on WhatsApp."
+    : "Brand new, hand-picked for you. Photographed exactly as it is. Tap Check availability to ask for it on WhatsApp.";
   return {
     name,
     category: category || null,
     stock,
     price,
     gender,
-    description: "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+    description,
   };
 }
 
@@ -1281,7 +1288,7 @@ export default {
           id,
           name: (it.name || "New Item").slice(0, 80),
           category,
-          description: it.description || "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+          description: it.description || "Brand new, hand-picked for you. Photographed exactly as it is. Tap Check availability to ask for it on WhatsApp.",
           price: !isNaN(priceN) && priceN > 0 ? priceN : 0,
           stock,
           sales: [],

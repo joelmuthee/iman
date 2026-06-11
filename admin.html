@@ -67,23 +67,37 @@
   <!-- ====== QUICK NAV ====== -->
   <nav class="admin-nav" id="adminNav">
     <a href="#igSyncDash" class="admin-nav-cta">⚡ Add stock from IG</a>
-    <a href="#posDash" class="admin-nav-pos">🛒 Sell in store</a>
+    <!-- Tier gate (Basic / Shopfront): Sell in store, Sales, Inventory and Owed
+         are Shop Records (3k) features. Hidden, not removed — the worker and
+         data model are untouched, so an upgrade is just removing display:none
+         here, on the matching <section>s below, and the #tierGateBasic style
+         block. -->
+    <a href="#posDash" class="admin-nav-pos" style="display:none;">🛒 Sell in store</a>
     <a href="#addForm">+ Add manually</a>
-    <a href="#salesDash">Sales</a>
-    <a href="#invDash">Inventory</a>
+    <a href="#salesDash" style="display:none;">Sales</a>
+    <a href="#invDash" style="display:none;">Inventory</a>
     <!-- Tier gate (Shop Records): WhatsApp Marketing / Clients / Insights /
          Daily report are 5k+ features. Hidden, not removed — the worker still
          captures everything, so an upgrade is just removing display:none. -->
     <a href="#broadcastDash" style="display:none;">WhatsApp Marketing</a>
     <a href="#clientsDash" id="clientsNavLink" style="display:none;">Clients <span class="admin-nav-count" id="navClientsCount"></span><span class="admin-nav-new" id="clientsNavNew">NEW</span></a>
-    <a href="#owedDash" id="owedNavLink">Owed <span class="admin-nav-count" id="navOwedCount"></span><span class="admin-nav-new" id="owedNavNew">NEW</span></a>
+    <a href="#owedDash" id="owedNavLink" style="display:none;">Owed <span class="admin-nav-count" id="navOwedCount"></span><span class="admin-nav-new" id="owedNavNew">NEW</span></a>
     <a href="#insightsDash" style="display:none;">Insights</a>
     <a href="#reportDash" style="display:none;">Daily report</a>
     <a href="#allItems">All items <span class="admin-nav-count" id="navItemCount"></span></a>
   </nav>
 
+  <!-- Tier gate (Basic / Shopfront): hides the JS-rendered sale/restock buttons
+       (item-card Sell + Restock, bulk-bar Sell to one customer) that inline
+       display:none can't reach. Upgrade to Shop Records = delete this block. -->
+  <style id="tierGateBasic">
+    .admin-card-actions button[onclick^="openSaleModal"],
+    .admin-card-actions button[onclick^="openRestockModal"],
+    #bulkActions button[onclick="bulkSell()"] { display: none; }
+  </style>
+
   <!-- ====== POS — SELL IN STORE (counter checkout + receipts) ====== -->
-  <section class="dash" id="posDash">
+  <section class="dash" id="posDash" style="display:none;">
     <h2 class="dash-title">🛒 Sell in store</h2>
     <p class="pos-sub">Record a sale you made in person. Stock updates and it lands in your Sales totals automatically. Tap <strong>M-Pesa</strong> just to note how you were paid.</p>
     <div id="posTodaySplit" class="pos-today"></div>
@@ -151,7 +165,7 @@
   </section>
 
   <!-- ====== SALES DASHBOARD ====== -->
-  <section class="dash" id="salesDash">
+  <section class="dash" id="salesDash" style="display:none;">
     <h2 class="dash-title">Sales Overview</h2>
     <div class="kpi-grid" id="kpiGrid"></div>
     <div class="dash-grid">
@@ -167,7 +181,7 @@
   </section>
 
   <!-- ====== INVENTORY DASHBOARD ====== -->
-  <section class="dash" id="invDash">
+  <section class="dash" id="invDash" style="display:none;">
     <h2 class="dash-title">Inventory Overview</h2>
     <div class="inv-kpi-grid" id="invKpiGrid"></div>
     <div class="section-divider">Stock levels <span id="invSortLabel">sorted low → high</span></div>
@@ -253,7 +267,7 @@
   </section>
 
   <!-- ====== MONEY OWED — customers buying on credit / pay later ====== -->
-  <section class="dash" id="owedDash">
+  <section class="dash" id="owedDash" style="display:none;">
     <h2 class="dash-title">Money owed</h2>
     <p style="font-size:13px;color:var(--ink-soft);margin:-8px 0 16px;">Customers who took items but haven't paid in full yet. When you record a sale and they pay less than the price, the rest shows up here so you can keep track and chase it. Record a payment whenever they pay you something.</p>
     <div class="inv-kpi-grid" id="owedKpiGrid"></div>
