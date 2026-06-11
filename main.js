@@ -824,7 +824,7 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
     const shopName = settings.shopName || 'Iman High Street';
     document.title = shopName + ' · Paused';
 
-    const tagline = settings.tagline || 'Brand New Ladies Fashion · Nairobi';
+    const tagline = settings.tagline || "Ladies & Men's Fashion · Nairobi";
     const igHandle = (settings.instagramHandle || 'iman_high_street').replace(/^@/, '');
     const igLink = igHandle ? ('https://www.instagram.com/' + igHandle + '/') : '';
     const waLink = 'https://wa.me/254720615606?text=' + encodeURIComponent('Hi Essence, I\'d like to bring ' + shopName + ' back online. Tell me about the one-off option.');

@@ -731,7 +731,7 @@ export default {
       const mime = /\.png$/i.test(img) ? "image/png" : /\.webp$/i.test(img) ? "image/webp" : "image/jpeg";
       const price = item.price > 0 ? ` · Ksh ${Number(item.price).toLocaleString("en-US")}` : "";
       const title = esc(item.name + price);
-      const desc = esc((item.description || "Brand new women's fashion in Nairobi. Tap to view and ask on WhatsApp.").slice(0, 160));
+      const desc = esc((item.description || "Brand new ladies and men's fashion in Nairobi. Tap to view and ask on WhatsApp.").slice(0, 160));
       const html = `<!DOCTYPE html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta property="og:type" content="product">
