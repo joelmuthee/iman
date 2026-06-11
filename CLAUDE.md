@@ -18,6 +18,7 @@ Brand-new ladies fashion shop (plus some men's formal pieces), CBK Pension Tower
 8. **Prices parse from captions** (`@21,000`, `30k`, "for 41,000"). Price ranges ("18k-20k", "between X to Y") → `price: 0` = "Price on request". `/api/ig-sync` accepts an optional `price` per item (this fork only).
 9. **`/api/buyer` is neutralised** (acks `forwarded:false`, no GHL). Wire the client's own GHL locationId/formId only if they buy that feature.
 10. **deriveBrand is type-first + brand-second, first-line scoped** (multi-item captions like "Balmain Blazer / Ysl skirt / Tube top" name from line 1). No leading-handle strip (feed-API captions have none).
+11. **Ladies / Men filter (added 2026-06-11, owner ask).** Optional `item.gender` field: `'ladies'` / `'gents'` / absent = both. Public pill row `#genderPills` (Everyone / Ladies / Men) above the search row; `genderMatch()` in main.js also scopes the size dropdown pool. Admin: "Who is it for?" select (`#genderInput`) in the add/edit form + a per-row select in the IG-sync review list. Worker `parseCaptionForBag` auto-detects from caption words, category, and size scale (suit sizes 48-58 = gents, dress sizes 6-18 = ladies, EU shoe range high/low). All 46 seeded items were hand-verified against their photos; `tools/tag_gender.js` holds the per-item overrides.
 
 ## Infra
 
