@@ -67,13 +67,14 @@
   <!-- ====== QUICK NAV ====== -->
   <nav class="admin-nav" id="adminNav">
     <a href="#igSyncDash" class="admin-nav-cta">⚡ Add stock from IG</a>
-    <!-- Tier gate (Basic / Shopfront): Sell in store, Sales, Inventory and Owed
-         are Shop Records (3k) features. Hidden, not removed — the worker and
-         data model are untouched, so an upgrade is just removing display:none
-         here, on the matching <section>s below, and the #tierGateBasic style
-         block. -->
-    <a href="#posDash" class="admin-nav-pos" style="display:none;">🛒 Sell in store</a>
+    <a href="#posDash" class="admin-nav-pos">🛒 Sell in store</a>
     <a href="#addForm">+ Add manually</a>
+    <!-- Tier gate (Basic / Shopfront): the Sales, Inventory and Owed OVERVIEW
+         dashboards are Shop Records (3k) features. Selling (POS, card Sell /
+         Restock, bulk sell) and saving buyer details stay available on Basic —
+         data entry is never gated (owner decision 2026-06-11), so the history
+         is there on upgrade. Hidden, not removed: upgrade = remove these
+         display:none + the ones on the matching <section>s below. -->
     <a href="#salesDash" style="display:none;">Sales</a>
     <a href="#invDash" style="display:none;">Inventory</a>
     <!-- Tier gate (Shop Records): WhatsApp Marketing / Clients / Insights /
@@ -87,17 +88,8 @@
     <a href="#allItems">All items <span class="admin-nav-count" id="navItemCount"></span></a>
   </nav>
 
-  <!-- Tier gate (Basic / Shopfront): hides the JS-rendered sale/restock buttons
-       (item-card Sell + Restock, bulk-bar Sell to one customer) that inline
-       display:none can't reach. Upgrade to Shop Records = delete this block. -->
-  <style id="tierGateBasic">
-    .admin-card-actions button[onclick^="openSaleModal"],
-    .admin-card-actions button[onclick^="openRestockModal"],
-    #bulkActions button[onclick="bulkSell()"] { display: none; }
-  </style>
-
   <!-- ====== POS — SELL IN STORE (counter checkout + receipts) ====== -->
-  <section class="dash" id="posDash" style="display:none;">
+  <section class="dash" id="posDash">
     <h2 class="dash-title">🛒 Sell in store</h2>
     <p class="pos-sub">Record a sale you made in person. Stock updates and it lands in your Sales totals automatically. Tap <strong>M-Pesa</strong> just to note how you were paid.</p>
     <div id="posTodaySplit" class="pos-today"></div>
