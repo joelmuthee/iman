@@ -847,13 +847,13 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
     const igLink = igHandle ? ('https://www.instagram.com/' + igHandle + '/') : '';
     const waLink = 'https://wa.me/254720615606?text=' + encodeURIComponent('Hi Essence, I\'d like to bring ' + shopName + ' back online. Tell me about the one-off option.');
     const WA_SVG = '<svg viewBox="0 0 32 32" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M16.003 3C9.38 3 4 8.38 4 15.003c0 2.117.553 4.184 1.604 6.005L4 29l8.184-1.57a11.94 11.94 0 0 0 3.819.626h.003C22.626 28.056 28 22.676 28 16.053 28 9.43 22.626 3 16.003 3zm0 21.94h-.002a9.93 9.93 0 0 1-3.4-.62l-.244-.088-4.857.932.94-4.735-.16-.244a9.91 9.91 0 0 1-1.52-5.27c0-5.49 4.47-9.96 9.96-9.96 2.66 0 5.16 1.04 7.04 2.92a9.9 9.9 0 0 1 2.92 7.04c0 5.49-4.47 9.96-9.96 9.96zm5.46-7.46c-.3-.15-1.77-.873-2.044-.973-.274-.1-.474-.15-.673.15-.2.3-.773.973-.948 1.173-.174.2-.349.224-.648.075-.3-.15-1.265-.466-2.41-1.487-.89-.794-1.49-1.774-1.665-2.074-.174-.3-.018-.462.13-.611.134-.133.3-.349.449-.523.15-.174.2-.3.3-.498.1-.2.05-.374-.025-.524-.075-.15-.673-1.622-.922-2.222-.243-.583-.49-.504-.673-.513l-.573-.01c-.2 0-.524.075-.798.374-.274.3-1.047 1.023-1.047 2.495 0 1.472 1.072 2.894 1.222 3.094.15.2 2.11 3.222 5.11 4.516.714.308 1.272.492 1.706.63.717.228 1.37.196 1.886.119.575-.086 1.77-.724 2.02-1.423.25-.7.25-1.298.175-1.423-.074-.124-.274-.199-.573-.349z"></path></svg>';
-    const logoUrl = 'images/logo-nav.jpg';
+    const logoUrl = 'images/logo-nav-trans.png?v=1';
 
     const IG_SVG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>';
 
     const css = ('@keyframes imSusFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}'
       + '#suspendedOverlay{position:fixed;inset:0;z-index:99999;background:radial-gradient(ellipse at top,#3a1f33 0%,#281020 65%);color:#efe2ec;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;font-family:Inter,system-ui,-apple-system,sans-serif;animation:imSusFade 0.65s ease both;}'
-      + '#suspendedOverlay .im-logo{width:140px;height:140px;border-radius:50%;object-fit:cover;background:#fff;border:2px solid #bf9b30;box-shadow:0 0 36px rgba(191,155,48,0.4),inset 0 0 0 1px rgba(255,255,255,0.04);margin-bottom:26px;}'
+      + '#suspendedOverlay .im-logo{width:auto;height:90px;max-width:280px;object-fit:contain;margin-bottom:26px;filter:drop-shadow(0 0 24px rgba(191,155,48,0.35));}'
       + '#suspendedOverlay .im-name{font-family:\'Cormorant Garamond\',Georgia,serif;font-size:34px;color:#e3cd8f;letter-spacing:2.5px;font-weight:500;line-height:1;margin-bottom:8px;}'
       + '#suspendedOverlay .im-tag{font-size:12px;color:#bf9b30;letter-spacing:2px;text-transform:uppercase;margin-bottom:30px;opacity:0.9;}'
       + '#suspendedOverlay .im-rule{width:54px;height:1px;background:linear-gradient(90deg,transparent,#bf9b30,transparent);margin-bottom:30px;}'
@@ -863,7 +863,7 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
       + '#suspendedOverlay .im-offer b{color:#fff;font-weight:700;}'
       + '#suspendedOverlay .im-ig{display:inline-flex;align-items:center;gap:10px;background:#bf9b30;color:#281020;padding:14px 30px;border-radius:999px;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:0.3px;box-shadow:0 6px 24px rgba(191,155,48,0.3);transition:transform 0.2s ease,box-shadow 0.2s ease,background 0.2s ease;}'
       + '#suspendedOverlay .im-ig:hover{background:#e3cd8f;transform:translateY(-1px);box-shadow:0 8px 28px rgba(191,155,48,0.42);}'
-      + '@media (max-width:480px){#suspendedOverlay .im-logo{width:118px;height:118px;margin-bottom:22px;}#suspendedOverlay .im-name{font-size:28px;letter-spacing:2px;}#suspendedOverlay .im-tag{font-size:11px;margin-bottom:24px;}}'
+      + '@media (max-width:480px){#suspendedOverlay .im-logo{height:72px;max-width:220px;margin-bottom:22px;}#suspendedOverlay .im-name{font-size:28px;letter-spacing:2px;}#suspendedOverlay .im-tag{font-size:11px;margin-bottom:24px;}}'
     );
     const styleTag = document.createElement('style');
     styleTag.textContent = css;

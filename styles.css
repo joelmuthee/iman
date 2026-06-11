@@ -93,19 +93,16 @@ img { max-width: 100%; display: block; }
   width: min(1200px, 92%); margin: 0 auto; padding: 14px 0;
 }
 .brand { display: flex; align-items: center; gap: 12px; color: var(--ink); }
-/* The crown logo is fine gold linework — on the cream nav it needs a white
-   plate + gold ring to read at nav size (owner report 2026-06-11). */
+/* IMAN HIGH STREET wordmark — gold serif on cream. Wide 2.4:1 aspect,
+   reads cleanly without a plate (owner swapped in the wordmark 2026-06-11). */
 .brand-logo {
-  height: 64px; width: auto; max-width: 340px; display: block; object-fit: contain;
-  background: #fff; padding: 2px 4px; border-radius: 9px;
-  border: 1px solid rgba(191,155,48,0.4);
-  box-shadow: 0 1px 4px rgba(40,16,34,0.08);
+  height: 56px; width: auto; max-width: 240px; display: block; object-fit: contain;
 }
 .brand-text {
   font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.1;
   color: var(--ink); letter-spacing: 0.04em; white-space: nowrap;
 }
-.footer-brand .brand-logo { height: 80px; max-width: 380px; }
+.footer-brand .brand-logo { height: 72px; max-width: 280px; }
 .nav-links { display: flex; gap: 32px; align-items: center; }
 .nav-links a { color: var(--ink-soft); font-size: 14px; font-weight: 500; letter-spacing: 0.02em; transition: color 0.2s; }
 .nav-links a:hover { color: var(--gold-deep); }
@@ -1197,8 +1194,8 @@ summary.manual-entry-divider:active .me-pill { transform: translateY(0); }
 /* ===== MOBILE ===== */
 @media (max-width: 760px) {
   .nav-inner { padding: 8px 0; }
-  .brand-logo { height: 56px; max-width: 280px; }
-  .footer-brand .brand-logo { height: 70px; max-width: 300px; }
+  .brand-logo { height: 44px; max-width: 200px; }
+  .footer-brand .brand-logo { height: 60px; max-width: 240px; }
   .hero { padding: 48px 16px 56px; }
   .hero-eyebrow { font-size: 10px; letter-spacing: 0.24em; margin-bottom: 16px; }
   .hero-title { font-size: clamp(42px, 11vw, 60px); margin-bottom: 16px; }
