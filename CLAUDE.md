@@ -24,7 +24,7 @@ Brand-new ladies fashion shop (plus some men's formal pieces), CBK Pension Tower
 
 - Worker: `iman-high-street-api` → https://iman-high-street-api.stawisystems.workers.dev (account stawisystems, `58685495706b973821d77208248c66fc`)
 - KV: `iman-high-street-bags` (`a028f431a48d48c79c014cc247fa00bf`, binding `BAGS`)
-- Pages: project `iman-high-street`, **production branch `main`** → https://iman-high-street.pages.dev (no custom domain yet; when one lands, update `SITE` in the worker `/p/` route, `SHOP_URL` in admin.js, and all OG URLs in index.html)
+- Pages: project `iman-high-street`, **production branch `main`** → **https://iman.essenceautomations.com** (custom domain live 2026-06-11; proxied CNAME `iman` in the essenceautomations.com zone; iman-high-street.pages.dev still works underneath). `SITE` in the worker `/p/` route, `SHOP_URL` in admin.js and the OG/canonical URLs in index.html all point at the custom domain.
 - Secrets set: `ADMIN_TOKEN` (in `worker/.admin-token`, gitignored), `MASTER_TOKEN` (fleet), `MASTER_PASSWORD` (fleet). `WASENDER_TOKEN` not set (daily report is Pro-tier; the cron no-ops).
 - Owner login: `iman123` (client-side fallback + worker `FALLBACK_OWNER_PASSWORD`). Agency master works server-side.
 - IG: @iman_high_street, **IG_USER_ID `51870726026`** (hard-coded in admin.js + worker ig-classify default)

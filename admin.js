@@ -2,7 +2,7 @@
 const ADMIN_PASSWORD = 'iman123';
 const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
 const ADMIN_TOKEN = atob('aW1hbi1hZG1pbi01MTkwOGJjZjNiZmViYTg5YWEyNjY5Y2I=');
-const SHOP_URL = 'https://iman-high-street.pages.dev'; // public storefront — used in WhatsApp messages to clients
+const SHOP_URL = 'https://iman.essenceautomations.com'; // public storefront — used in WhatsApp messages to clients
 
 let bags = [];
 let settings = {};
