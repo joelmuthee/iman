@@ -392,6 +392,9 @@ document.getElementById('igQuickBtn')?.addEventListener('click', async () => {
     }
 
     stagedInstagramUrl = data.postUrl;
+    // Reveal the manual fields so the owner can see what was auto-filled.
+    const manualEntryEl = document.getElementById('manualEntry');
+    if (manualEntryEl) manualEntryEl.open = true;
     status.textContent = '✓ Image and caption loaded. Review the name, category, price and stock, then Save.';
     status.className = 'ig-quick-status ok';
   } catch (err) {
@@ -492,6 +495,13 @@ document.getElementById('addCustomSizeBtn')?.addEventListener('click', () => add
 // without collapsing the chart they're working in.
 document.querySelectorAll('.stock-details[data-stock-group]').forEach(det => {
   det.addEventListener('input', () => refreshStockGroups(false));
+});
+
+// "+ Add manually" nav link expands the (collapsed-by-default) manual form,
+// so tapping it lands the owner on open fields rather than a closed toggle.
+document.querySelector('.admin-nav a[href="#addForm"]')?.addEventListener('click', () => {
+  const manualEntry = document.getElementById('manualEntry');
+  if (manualEntry) manualEntry.open = true;
 });
 
 // ====== AI DESCRIPTION ======
@@ -735,11 +745,14 @@ function resetForm() {
   if (igStatus) { igStatus.textContent = ''; igStatus.className = 'ig-quick-status'; }
   document.getElementById('formTitle').textContent = 'Add a new item';
   document.getElementById('cancelBtn').style.display = 'none';
-  // Restore the IG quick-add panel + divider (hidden during edit mode)
+  // Restore the IG quick-add panel + divider (hidden during edit mode) and
+  // re-collapse the manual fields back to their default closed state.
   const igPanel = document.getElementById('igQuickPanel');
   const manualDivider = document.getElementById('manualEntryDivider');
+  const manualEntry = document.getElementById('manualEntry');
   if (igPanel) igPanel.style.display = '';
   if (manualDivider) manualDivider.style.display = '';
+  if (manualEntry) manualEntry.open = false;
 }
 
 function editItem(id) {
@@ -765,9 +778,12 @@ function editItem(id) {
   document.getElementById('cancelBtn').style.display = 'inline-block';
   // Hide the IG quick-add panel + "OR enter manually" divider in edit mode —
   // they're irrelevant when editing and they push the populated inputs off-screen
-  // on mobile, making it look like the Edit didn't work.
+  // on mobile, making it look like the Edit didn't work. Force the manual fields
+  // OPEN (the divider/toggle is hidden, so the fields must show regardless).
   const igPanel = document.getElementById('igQuickPanel');
   const manualDivider = document.getElementById('manualEntryDivider');
+  const manualEntry = document.getElementById('manualEntry');
+  if (manualEntry) manualEntry.open = true;
   if (igPanel) igPanel.style.display = 'none';
   if (manualDivider) manualDivider.style.display = 'none';
   // Scroll the form into view (instant — smooth-scroll over a long page adds a

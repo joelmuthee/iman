@@ -94,8 +94,8 @@ img { max-width: 100%; display: block; }
 /* The crown logo is fine gold linework — on the cream nav it needs a white
    plate + gold ring to read at nav size (owner report 2026-06-11). */
 .brand-logo {
-  height: 56px; width: auto; max-width: 320px; display: block; object-fit: contain;
-  background: #fff; padding: 3px 7px; border-radius: 10px;
+  height: 64px; width: auto; max-width: 340px; display: block; object-fit: contain;
+  background: #fff; padding: 2px 4px; border-radius: 9px;
   border: 1px solid rgba(191,155,48,0.4);
   box-shadow: 0 1px 4px rgba(42,28,15,0.08);
 }
@@ -921,6 +921,22 @@ html { scroll-behavior: smooth; }
   content: ""; flex: 1; height: 1px; background: var(--line);
 }
 
+/* Manual entry collapses by default (IG quick-add is the primary path). The
+   divider is the <summary> toggle — clickable, with a chevron. Native
+   <details> = webview-safe, no JS dialog. */
+.manual-entry { margin: 6px 0 0; }
+summary.manual-entry-divider { cursor: pointer; user-select: none; margin: 6px 0; }
+summary.manual-entry-divider::-webkit-details-marker { display: none; }
+summary.manual-entry-divider > span {
+  display: inline-flex; align-items: center; gap: 7px; white-space: nowrap;
+}
+summary.manual-entry-divider > span::after {
+  content: "›"; font-size: 16px; letter-spacing: 0;
+  color: var(--gold-deep); transform: rotate(90deg); transition: transform 0.18s ease;
+}
+.manual-entry[open] > summary.manual-entry-divider > span::after { transform: rotate(-90deg); }
+summary.manual-entry-divider:hover { color: var(--gold-deep); }
+
 @media (max-width: 600px) {
   .ig-quick-add { padding: 16px; }
   .ig-quick-title { font-size: 19px; }
@@ -1167,7 +1183,7 @@ html { scroll-behavior: smooth; }
 /* ===== MOBILE ===== */
 @media (max-width: 760px) {
   .nav-inner { padding: 8px 0; }
-  .brand-logo { height: 50px; max-width: 260px; }
+  .brand-logo { height: 56px; max-width: 280px; }
   .footer-brand .brand-logo { height: 70px; max-width: 300px; }
   .hero { padding: 48px 16px 56px; }
   .hero-eyebrow { font-size: 10px; letter-spacing: 0.24em; margin-bottom: 16px; }

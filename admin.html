@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#3a2c12">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=5">
+<link rel="stylesheet" href="styles.css?v=6">
 </head>
 <body style="background:#f8f6f2;">
 
@@ -329,9 +329,13 @@
       <p id="igQuickStatus" class="ig-quick-status"></p>
     </div>
 
-    <div class="manual-entry-divider" id="manualEntryDivider">
+    <!-- Manual entry collapses by default — IG quick-add above is the primary
+         path, so the long manual form shouldn't fill the screen unasked. The
+         divider doubles as the toggle. Auto-opens on edit + after an IG fetch. -->
+    <details class="manual-entry" id="manualEntry">
+    <summary class="manual-entry-divider" id="manualEntryDivider">
       <span>OR enter manually below</span>
-    </div>
+    </summary>
 
     <div class="field">
       <label>Main image</label>
@@ -499,6 +503,7 @@
       <button class="btn-admin primary" id="saveBtn">Save item</button>
       <button class="btn-admin" id="cancelBtn" style="display:none;">Cancel edit</button>
     </div>
+    </details>
   </div>
 
   <!-- ====== ITEM LIST ====== -->
@@ -846,6 +851,6 @@
   </div>
 </div>
 
-<script src="admin.js?v=20260611stock"></script>
+<script src="admin.js?v=20260611manual"></script>
 </body>
 </html>
