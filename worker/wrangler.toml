@@ -1,0 +1,22 @@
+name = "iman-high-street-api"
+main = "src/index.js"
+compatibility_date = "2025-01-01"
+account_id = "58685495706b973821d77208248c66fc"
+
+[[kv_namespaces]]
+binding = "BAGS"
+id = "a028f431a48d48c79c014cc247fa00bf"
+
+# Workers AI — Llama 3.1 8B (text) + Llama 3.2 11B Vision for IG bulk-sync
+# classification. Free tier: 10k requests/day, comfortable for daily syncs.
+[ai]
+binding = "AI"
+
+# Daily closing report — fires 17:00 UTC = 20:00 EAT (8pm Nairobi).
+# The scheduled() handler no-ops unless the owner enabled it + set a phone.
+[triggers]
+crons = ["0 17 * * *"]
+
+# Secrets — never committed:
+#   npx wrangler secret put ADMIN_TOKEN
+#   npx wrangler secret put WASENDER_TOKEN   (for the daily WhatsApp report)

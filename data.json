@@ -1,0 +1,781 @@
+{
+ "bags": [
+  {
+   "id": "ig_DZYRtxMNgWb",
+   "name": "Blazer",
+   "category": "Blazers",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 21000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181838695_9ig5.jpg",
+   "createdAt": "2026-06-09T20:56:43.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DZYRtxMNgWb/"
+  },
+  {
+   "id": "ig_DYqVQ_MIU-U",
+   "name": "D&G Sneakers",
+   "category": "Shoes",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 22000,
+   "stock": {
+    "EU36": 1,
+    "EU37": 1,
+    "EU38": 1,
+    "EU39": 1,
+    "EU40": 1,
+    "EU41": 1,
+    "EU42": 1,
+    "EU43": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181839648_marv.jpg",
+   "createdAt": "2026-05-23T00:44:41.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DYqVQ_MIU-U/"
+  },
+  {
+   "id": "ig_DYjLQhHjU3M",
+   "name": "Skirt",
+   "category": "Skirts",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 12000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181840549_6b9k.jpg",
+   "createdAt": "2026-05-20T05:59:59.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DYjLQhHjU3M/"
+  },
+  {
+   "id": "ig_DYfK_0rjXHk",
+   "name": "Heels",
+   "category": "Heels",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 23000,
+   "stock": {
+    "EU37": 1,
+    "EU38": 1,
+    "EU39": 1,
+    "EU40": 1,
+    "EU41": 1,
+    "EU42": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181841472_mzvu.jpg",
+   "createdAt": "2026-05-18T16:40:44.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DYfK_0rjXHk/"
+  },
+  {
+   "id": "ig_DYeYK_vt4bd",
+   "name": "Balmain Blazer",
+   "category": "Blazers",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 21000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181842391_zcnx.jpg",
+   "createdAt": "2026-05-18T09:18:00.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DYeYK_vt4bd/"
+  },
+  {
+   "id": "ig_DYZ6WkJDVas",
+   "name": "Bag",
+   "category": "Handbags",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181843276_dx30.jpg",
+   "createdAt": "2026-05-16T15:39:04.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DYZ6WkJDVas/",
+   "images": [
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181843276_dx30.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181845663_sdgp.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181846537_9i02.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181847803_nmki.jpg"
+   ]
+  },
+  {
+   "id": "ig_DYPOQVLDZhi",
+   "name": "Ferragamo Bag",
+   "category": "Handbags",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 51000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181848722_4aee.jpg",
+   "createdAt": "2026-05-12T12:01:21.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DYPOQVLDZhi/"
+  },
+  {
+   "id": "ig_DYFe8P3Dbd2",
+   "name": "YSL Skirt",
+   "category": "Skirts",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 21000,
+   "stock": {
+    "XXL": 1,
+    "S": 1,
+    "M": 1,
+    "L": 1,
+    "XL": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181825802_2f5i.jpg",
+   "createdAt": "2026-05-08T17:14:46.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DYFe8P3Dbd2/"
+  },
+  {
+   "id": "ig_DYAMW_KjIqJ",
+   "name": "Ferragamo Bag",
+   "category": "Handbags",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 51000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181826770_u5rk.jpg",
+   "createdAt": "2026-05-06T15:56:13.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DYAMW_KjIqJ/"
+  },
+  {
+   "id": "ig_DX3a2gOjTyt",
+   "name": "Suit",
+   "category": "Suits",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 48000,
+   "stock": {
+    "8": 1,
+    "10": 1,
+    "12": 1,
+    "14": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181827714_m0f4.jpg",
+   "createdAt": "2026-05-03T06:09:39.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DX3a2gOjTyt/"
+  },
+  {
+   "id": "ig_DXszn18CPqd",
+   "name": "Gianfranco Ferre Shoes",
+   "category": "Shoes",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181828588_7hws.jpg",
+   "createdAt": "2026-04-29T03:14:26.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXszn18CPqd/",
+   "images": [
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181828588_7hws.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181829863_44f5.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181831677_m7mh.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181833038_aunx.jpg"
+   ]
+  },
+  {
+   "id": "ig_DXszII9CDk1",
+   "name": "Suit",
+   "category": "Suits",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 41000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181833929_h216.jpg",
+   "createdAt": "2026-04-29T03:10:10.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXszII9CDk1/"
+  },
+  {
+   "id": "ig_DXpTTn4jS46",
+   "name": "Zegna Suit",
+   "category": "Suits",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181834812_ush2.jpg",
+   "createdAt": "2026-04-27T18:34:21.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXpTTn4jS46/"
+  },
+  {
+   "id": "ig_DXlgWzzjUL1",
+   "name": "T-Shirt",
+   "category": "Tops",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 5000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181835705_nyky.jpg",
+   "createdAt": "2026-04-26T07:11:30.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXlgWzzjUL1/"
+  },
+  {
+   "id": "ig_DXi2NdNDcbt",
+   "name": "Shoes",
+   "category": "Shoes",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 27000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181817029_8o31.jpg",
+   "createdAt": "2026-04-25T06:24:42.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXi2NdNDcbt/"
+  },
+  {
+   "id": "ig_DXi13p_DQpl",
+   "name": "Blazer",
+   "category": "Blazers",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 20000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181817953_2uym.jpg",
+   "createdAt": "2026-04-25T06:21:42.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXi13p_DQpl/"
+  },
+  {
+   "id": "ig_DXhSTEsDZVD",
+   "name": "Ferragamo Belt",
+   "category": "Accessories",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 12000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181818947_jsyd.jpg",
+   "createdAt": "2026-04-24T15:51:37.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXhSTEsDZVD/"
+  },
+  {
+   "id": "ig_DXU1NWpjfKE",
+   "name": "Blazer",
+   "category": "Blazers",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181819822_cf3o.jpg",
+   "createdAt": "2026-04-19T19:46:33.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXU1NWpjfKE/"
+  },
+  {
+   "id": "ig_DXT77aqjSWo",
+   "name": "Suit",
+   "category": "Suits",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 30000,
+   "stock": {
+    "48": 1,
+    "50": 1,
+    "52": 1,
+    "54": 1,
+    "56": 1,
+    "58": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181820762_9lt3.jpg",
+   "createdAt": "2026-04-19T11:26:02.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXT77aqjSWo/"
+  },
+  {
+   "id": "ig_DXTk-jIDd3i",
+   "name": "Suit",
+   "category": "Suits",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 30000,
+   "stock": {
+    "48": 1,
+    "50": 1,
+    "52": 1,
+    "54": 1,
+    "56": 1,
+    "58": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181821687_gvot.jpg",
+   "createdAt": "2026-04-19T08:05:29.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXTk-jIDd3i/"
+  },
+  {
+   "id": "ig_DXPefxyjexG",
+   "name": "Top",
+   "category": "Tops",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 14000,
+   "stock": {
+    "S": 1,
+    "M": 1,
+    "L": 1,
+    "XL": 1,
+    "XXL": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181822842_27gy.jpg",
+   "createdAt": "2026-04-17T17:51:53.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXPefxyjexG/"
+  },
+  {
+   "id": "ig_DXORNHVDVOL",
+   "name": "Top",
+   "category": "Tops",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 14000,
+   "stock": {
+    "S": 1,
+    "M": 1,
+    "L": 1,
+    "XL": 1,
+    "XXL": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181805361_cxa3.jpg",
+   "createdAt": "2026-04-17T06:36:30.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXORNHVDVOL/"
+  },
+  {
+   "id": "ig_DXNeKk6jiCh",
+   "name": "Blazer",
+   "category": "Blazers",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "12": 1,
+    "14": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181806271_dgdz.jpg",
+   "createdAt": "2026-04-16T23:10:31.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXNeKk6jiCh/"
+  },
+  {
+   "id": "ig_DXNeDpdDndd",
+   "name": "Top",
+   "category": "Tops",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 14000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181807212_5z43.jpg",
+   "createdAt": "2026-04-16T23:09:34.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXNeDpdDndd/"
+  },
+  {
+   "id": "ig_DXNG0IADQJM",
+   "name": "Stretch Suit",
+   "category": "Suits",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 46000,
+   "stock": {
+    "10": 1,
+    "12": 1,
+    "14": 1,
+    "16": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181808123_ycct.jpg",
+   "createdAt": "2026-04-16T19:46:28.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXNG0IADQJM/"
+  },
+  {
+   "id": "ig_DXLxDAljeyR",
+   "name": "Dress",
+   "category": "Dresses",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 17000,
+   "stock": {
+    "12": 1,
+    "14": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181809059_oivy.jpg",
+   "createdAt": "2026-04-16T07:17:01.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXLxDAljeyR/"
+  },
+  {
+   "id": "ig_DXLw3MzDdtq",
+   "name": "Blazer",
+   "category": "Blazers",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "8": 1,
+    "10": 1,
+    "12": 1,
+    "14": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181809955_ee4z.jpg",
+   "createdAt": "2026-04-16T07:15:24.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXLw3MzDdtq/"
+  },
+  {
+   "id": "ig_DXLwqAPjezi",
+   "name": "Balmain Suit",
+   "category": "Suits",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "6": 1,
+    "8": 1,
+    "10": 1,
+    "12": 1,
+    "14": 1,
+    "16": 1,
+    "18": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181810869_k5st.jpg",
+   "createdAt": "2026-04-16T07:13:36.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXLwqAPjezi/"
+  },
+  {
+   "id": "ig_DXKs7FZjc5y",
+   "name": "Dress",
+   "category": "Dresses",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 18000,
+   "stock": {
+    "6": 1,
+    "8": 1,
+    "10": 1,
+    "12": 1,
+    "14": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181789371_0v75.jpg",
+   "createdAt": "2026-04-15T21:21:45.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DXKs7FZjc5y/"
+  },
+  {
+   "id": "ig_DW4lIquDRMM",
+   "name": "Dress",
+   "category": "Dresses",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 21000,
+   "stock": {
+    "6": 1,
+    "8": 1,
+    "10": 1,
+    "12": 1,
+    "14": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181790225_10g6.jpg",
+   "createdAt": "2026-04-08T20:27:22.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DW4lIquDRMM/"
+  },
+  {
+   "id": "ig_DWvloI9DdKD",
+   "name": "Shoes",
+   "category": "Shoes",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "EU35": 1,
+    "EU36": 1,
+    "EU37": 1,
+    "EU38": 1,
+    "EU39": 1,
+    "EU40": 1,
+    "EU41": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181791166_6457.jpg",
+   "createdAt": "2026-04-05T08:38:28.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DWvloI9DdKD/",
+   "images": [
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181791166_6457.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181792586_ufv0.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181793863_nly0.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181795261_qtsv.jpg"
+   ]
+  },
+  {
+   "id": "ig_DWr2pWIDX6u",
+   "name": "Tie",
+   "category": "Accessories",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181796184_drtj.jpg",
+   "createdAt": "2026-04-03T21:50:13.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DWr2pWIDX6u/",
+   "images": [
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181796184_drtj.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181797498_2uxi.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181799634_belb.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181801091_gb7z.jpg"
+   ]
+  },
+  {
+   "id": "ig_DWrrUQgjWC9",
+   "name": "Tie",
+   "category": "Accessories",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 2500,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181772391_kokx.jpg",
+   "createdAt": "2026-04-03T20:11:13.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DWrrUQgjWC9/",
+   "images": [
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181772391_kokx.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181773915_4yu4.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181775572_eo0j.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181777218_yqbj.jpg"
+   ]
+  },
+  {
+   "id": "ig_DWqqKZjjVg5",
+   "name": "Shirt",
+   "category": "Tops",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181778595_66dq.jpg",
+   "createdAt": "2026-04-03T10:41:53.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DWqqKZjjVg5/",
+   "images": [
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181778595_66dq.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181780028_yj45.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181781396_ro2f.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181782781_lkiz.jpg"
+   ]
+  },
+  {
+   "id": "ig_DV_25ffDffw",
+   "name": "Suit",
+   "category": "Suits",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "S": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181783902_firj.jpg",
+   "createdAt": "2026-03-17T19:45:53.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DV_25ffDffw/"
+  },
+  {
+   "id": "ig_DV_2bczDdrH",
+   "name": "Blazer",
+   "category": "Blazers",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "S": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181784816_mkx2.jpg",
+   "createdAt": "2026-03-17T19:41:47.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DV_2bczDdrH/"
+  },
+  {
+   "id": "ig_DV_1uO6Db43",
+   "name": "Suit",
+   "category": "Suits",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181785796_vwdv.jpg",
+   "createdAt": "2026-03-17T19:35:37.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DV_1uO6Db43/"
+  },
+  {
+   "id": "ig_DV_zjX5jQ2K",
+   "name": "Shoes",
+   "category": "Shoes",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181756592_nu31.jpg",
+   "createdAt": "2026-03-17T19:16:36.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DV_zjX5jQ2K/",
+   "images": [
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181756592_nu31.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181758029_pa4i.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181759337_b286.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181761266_lnf0.jpg"
+   ]
+  },
+  {
+   "id": "ig_DV_bL0wDauE",
+   "name": "Shoes",
+   "category": "Shoes",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 12000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181762557_lafs.jpg",
+   "createdAt": "2026-03-17T15:43:40.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DV_bL0wDauE/",
+   "images": [
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181762557_lafs.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181764072_s68r.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181765589_xvxc.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181767903_x0e7.jpg"
+   ]
+  },
+  {
+   "id": "ig_DVwwc1ejSys",
+   "name": "Shoes",
+   "category": "Shoes",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 12000,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181768877_ccqv.jpg",
+   "createdAt": "2026-03-11T23:01:13.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DVwwc1ejSys/"
+  },
+  {
+   "id": "ig_DVtF8pIDb8e",
+   "name": "Dress",
+   "category": "Dresses",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181738990_6j9k.jpg",
+   "createdAt": "2026-03-10T12:51:46.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DVtF8pIDb8e/",
+   "images": [
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181738990_6j9k.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181740678_r3le.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181742213_g909.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181744544_1hfp.jpg"
+   ]
+  },
+  {
+   "id": "ig_DVoFF9IjbgG",
+   "name": "Shoes",
+   "category": "Shoes",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181745700_5xh7.jpg",
+   "createdAt": "2026-03-08T14:08:06.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DVoFF9IjbgG/",
+   "images": [
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181745700_5xh7.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181746809_jp15.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181747816_7p7y.jpg",
+    "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181748864_k2a7.jpg"
+   ]
+  },
+  {
+   "id": "ig_DUxSNtLDbac",
+   "name": "Dress",
+   "category": "Dresses",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181750067_3ogp.jpg",
+   "createdAt": "2026-02-15T07:25:44.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DUxSNtLDbac/"
+  },
+  {
+   "id": "ig_DUv9TGQjfhQ",
+   "name": "Jeans",
+   "category": "Jeans",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "6": 1,
+    "8": 1,
+    "10": 1,
+    "12": 1,
+    "14": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181751006_fd8s.jpg",
+   "createdAt": "2026-02-14T19:02:33.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DUv9TGQjfhQ/"
+  },
+  {
+   "id": "ig_DUv9MAHjToZ",
+   "name": "Top",
+   "category": "Tops",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 0,
+   "stock": {
+    "One Size": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181752004_a4tc.jpg",
+   "createdAt": "2026-02-14T19:01:35.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DUv9MAHjToZ/"
+  },
+  {
+   "id": "ig_DUI0ecgjagn",
+   "name": "Trouser Suit",
+   "category": "Suits",
+   "description": "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
+   "price": 42000,
+   "stock": {
+    "40": 1,
+    "42": 1,
+    "44": 1,
+    "46": 1
+   },
+   "sales": [],
+   "image": "https://iman-high-street-api.stawisystems.workers.dev/img/item_1781181752998_5e40.jpg",
+   "createdAt": "2026-01-30T14:16:00.000Z",
+   "instagramUrl": "https://www.instagram.com/p/DUI0ecgjagn/"
+  }
+ ],
+ "settings": {}
+}
