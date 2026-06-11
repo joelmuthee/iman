@@ -15,6 +15,7 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
   let settings = {};
   let suspended = false;
   let currentAvail = 'all';
+  let currentGender = 'all';
   let currentCat = 'all';
   let currentSize = 'all';
   let currentSort = 'default';
@@ -223,7 +224,7 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
   }
 
   function getAllSizesForFilter() {
-    const pool = currentCat === 'all' ? items : items.filter(i => i.category === currentCat);
+    const pool = items.filter(i => (currentCat === 'all' || i.category === currentCat) && genderMatch(i));
     const all = new Set();
     pool.forEach(i => availSizes(i).forEach(s => all.add(s)));
     return [...all].sort(sortSize);
@@ -338,6 +339,11 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
     sizePills.innerHTML = dropdownHTML({ kind: 'size', value: currentSize, ariaLabel: 'Filter by size', groups });
   }
 
+  // Ladies / Men filter: '' (no gender) = for everyone, shows under both.
+  function genderMatch(item) {
+    return currentGender === 'all' || !item.gender || item.gender === currentGender;
+  }
+
   function sizeMatch(item) {
     if (currentSize === 'all') return true;
     const avail = availSizes(item);
@@ -375,7 +381,7 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
         : currentAvail === 'sale' ? isOnSale(item)
         : !soldOut;
       const catOk = currentCat === 'all' || item.category === currentCat;
-      return availOk && catOk && sizeMatch(item) && searchMatch(item);
+      return availOk && catOk && genderMatch(item) && sizeMatch(item) && searchMatch(item);
     });
 
     // Sort
@@ -518,6 +524,18 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
       availPills.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
       p.classList.add('active');
       currentAvail = p.dataset.avail;
+      currentSize = 'all';
+      currentPage = 1;
+      render();
+    });
+  });
+
+  const genderPills = document.getElementById('genderPills');
+  genderPills?.querySelectorAll('.pill').forEach(p => {
+    p.addEventListener('click', () => {
+      genderPills.querySelectorAll('.pill').forEach(x => x.classList.remove('active'));
+      p.classList.add('active');
+      currentGender = p.dataset.gender;
       currentSize = 'all';
       currentPage = 1;
       render();

@@ -201,8 +201,8 @@ function parseCaptionForBag(caption) {
   const stock = {};
 
   // Strip price tokens BEFORE size scanning so "@21,000" can't bleed a "21"
-  // into the size detection.
-  const noPrices = lower.replace(/\d{1,3}(?:[,. ]\d{3})+/g, " ").replace(/\b\d{1,3}k\b/g, " ");
+  // into the size detection. Possessives ("colour's") must not read as size S.
+  const noPrices = lower.replace(/\d{1,3}(?:[,. ]\d{3})+/g, " ").replace(/\b\d{1,3}k\b/g, " ").replace(/'s\b/g, " ");
   const padded = " " + noPrices.replace(/[,/&|·]+/g, " ").replace(/\s+/g, " ") + " ";
 
   // --- Letter sizes: XS..5XL, "2xl" variant, and ranges ("s-2xl", "s to xxl") ---
@@ -260,6 +260,20 @@ function parseCaptionForBag(caption) {
 
   if (!Object.keys(stock).length) stock["One Size"] = 1;
 
+  // --- Who it's for: '' = both. Explicit words win; otherwise the category
+  // and size scale decide (suit sizes 48-58 read as gents, dress sizes 6-18
+  // as ladies, EU shoe range high vs low). Owner can override in admin.
+  let gender = "";
+  const sizeKeys = Object.keys(stock);
+  const euSizes = sizeKeys.filter(k => k.startsWith("EU")).map(k => parseInt(k.slice(2), 10));
+  if (/ladies|ladys?\b|\bwomen\b|\bwoman\b|\bgirls?\b|\bher\b/i.test(text)) gender = "ladies";
+  else if (/\bgents?\b|gentlem[ae]n|\bmen'?s\b|for men\b|\bhim\b/i.test(text)) gender = "gents";
+  else if (/^(Dresses|Skirts|Heels|Handbags)$/.test(category || "")) gender = "ladies";
+  else if (sizeKeys.some(k => /^(48|5[02468])$/.test(k))) gender = "gents";
+  else if (sizeKeys.some(k => /^(6|8|10|12|14|16|18)$/.test(k))) gender = "ladies";
+  else if (euSizes.length && Math.max(...euSizes) >= 44) gender = "gents";
+  else if (euSizes.length && Math.max(...euSizes) <= 42) gender = "ladies";
+
   // --- Price: "@21,000", "for 41,000", "27 000", "12.000", "30k". A RANGE
   // ("18k-20k", "between 35,000 to 51,000") means per-piece pricing -> 0
   // so the site shows "Price on request".
@@ -280,6 +294,7 @@ function parseCaptionForBag(caption) {
     category: category || null,
     stock,
     price,
+    gender,
     description: "Brand new, hand-picked for you. Photographed exactly as it is. Pick your size below and ask for it on WhatsApp.",
   };
 }
@@ -1182,6 +1197,7 @@ export default {
               name,
               category,
               stock: heuristicSuggestion.stock,
+              gender: heuristicSuggestion.gender || "",
               description: heuristicSuggestion.description,
             },
             ai_reason: reason,
@@ -1274,6 +1290,7 @@ export default {
           instagramUrl: `https://www.instagram.com/p/${it.shortcode}/`,
         };
         if (uploaded.length > 1) bag.images = uploaded;
+        if (it.gender === "ladies" || it.gender === "gents") bag.gender = it.gender;
         newBags.push(bag);
         added.push({ shortcode: it.shortcode, id });
         existingIds.add(id);

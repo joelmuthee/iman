@@ -516,6 +516,7 @@ async function saveItem() {
   const price = priceRaw === '' ? 0 : parseInt(priceRaw, 10);
   const desc = document.getElementById('descInput').value.trim();
   const category = getCategoryValue();
+  const gender = document.getElementById('genderInput')?.value || '';
   const stock = getStockFromForm();
 
   if (!name) { showToast('Item name is required.'); return; }
@@ -577,6 +578,7 @@ async function saveItem() {
         if (imagePath) bag.image = imagePath;
         if (itemSalePrice) bag.salePrice = itemSalePrice; else delete bag.salePrice;
         if (cost) bag.cost = cost; else delete bag.cost;
+        if (gender) bag.gender = gender; else delete bag.gender;
       });
       showToast('Item updated and live!');
     } else {
@@ -587,6 +589,7 @@ async function saveItem() {
       if (stagedInstagramUrl) newBag.instagramUrl = stagedInstagramUrl;
       if (itemSalePrice) newBag.salePrice = itemSalePrice;
       if (cost) newBag.cost = cost;
+      if (gender) newBag.gender = gender;
       await apiMutateAndPublish(() => { bags.unshift(newBag); });
       showToast('Item added and live!');
     }
@@ -686,6 +689,8 @@ function resetForm() {
   document.getElementById('editingId').value = '';
   document.getElementById('nameInput').value = '';
   setCategoryValue('');
+  const genderSel = document.getElementById('genderInput');
+  if (genderSel) genderSel.value = '';
   document.getElementById('descInput').value = '';
   document.getElementById('priceInput').value = '';
   document.getElementById('itemSalePriceInput').value = '';
@@ -717,6 +722,8 @@ function editItem(id) {
   document.getElementById('editingId').value = id;
   document.getElementById('nameInput').value = bag.name;
   setCategoryValue(bag.category || '');
+  const genderSelEdit = document.getElementById('genderInput');
+  if (genderSelEdit) genderSelEdit.value = bag.gender || '';
   document.getElementById('descInput').value = bag.description || '';
   document.getElementById('priceInput').value = bag.price;
   document.getElementById('itemSalePriceInput').value = bag.salePrice || '';
@@ -2575,6 +2582,11 @@ function renderIgSyncList() {
           <div class="ig-sync-row-1">
             <input type="text" class="ig-sync-name" data-ig-name="${i}" value="${escapeHtml(s.name || '')}" placeholder="Name">
             <select class="ig-sync-cat" data-ig-cat="${i}">${catOpts}</select>
+            <select class="ig-sync-cat" data-ig-gender="${i}">
+              <option value="" ${!s.gender ? 'selected' : ''}>Both</option>
+              <option value="ladies" ${s.gender === 'ladies' ? 'selected' : ''}>Ladies</option>
+              <option value="gents" ${s.gender === 'gents' ? 'selected' : ''}>Men</option>
+            </select>
           </div>
           <div class="ig-sync-row-2">
             <span class="ig-sync-size">${escapeHtml(stockText)}</span>
@@ -2600,10 +2612,12 @@ async function commitIgSync() {
     if (!cb || !cb.checked) return;
     const nameEl = igSyncListEl.querySelector(`[data-ig-name="${i}"]`);
     const catEl = igSyncListEl.querySelector(`[data-ig-cat="${i}"]`);
+    const genderEl = igSyncListEl.querySelector(`[data-ig-gender="${i}"]`);
     picks.push({
       shortcode: it.shortcode,
       name: (nameEl?.value || it.suggested?.name || '').trim() || 'New Item',
-      category: catEl?.value || it.suggested?.category || 'Shirts',
+      category: catEl?.value || it.suggested?.category || 'Dresses',
+      gender: genderEl ? genderEl.value : (it.suggested?.gender || ''),
       stock: it.suggested?.stock || { 'One Size': 1 },
       description: it.suggested?.description || '',
       imageUrls: it.imageUrls || [it.imageUrl],
