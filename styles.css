@@ -1,20 +1,22 @@
-/* Iman High Street — regal gold & rose pink on warm white (matches the crown logo) */
+/* Iman High Street — regal gold & rose pink on warm cream, with deep plum ink
+   (replaced the old brown ink/chocolate family 2026-06-11, owner ask). Plum sits
+   next to the rose-pink crown gems, so the whole palette stays harmonious. */
 :root {
-  --bg: #faf6ee;          /* warm white — the logo's background */
+  --bg: #faf6ee;          /* warm cream — the logo's background */
   --bg-card: #ffffff;
-  --ink: #2c2008;         /* deep brown — primary dark */
-  --ink-soft: #54421f;    /* mid brown */
-  --ink-faint: #8d7a55;   /* warm taupe */
+  --ink: #34182e;         /* deep plum — primary dark/text */
+  --ink-soft: #5e3550;    /* mid plum */
+  --ink-faint: #9a7d92;   /* muted mauve */
   --gold: #bf9b30;        /* regal gold — the IMAN wordmark */
   --gold-deep: #8e7020;   /* deeper gold */
   --gold-light: #e3cd8f;  /* light gold */
   --rose: #c9748f;        /* rose pink — the gems in the crown logo (deepened for light bg) */
-  --line: #eee2c4;        /* warm cream divider */
-  --surface: #f4ecd9;     /* warm beige surface */
-  --choco: #3a2c12;       /* mid chocolate (logo bg) */
-  --choco-deep: #261c08;  /* deepest chocolate */
-  --shadow: 0 1px 2px rgba(42,28,15,0.05), 0 8px 24px rgba(42,28,15,0.09);
-  --shadow-lg: 0 20px 60px rgba(42,28,15,0.16);
+  --line: #ece0e6;        /* soft plum-tinted divider */
+  --surface: #f6eef2;     /* pale plum-blush surface */
+  --choco: #3a1f33;       /* deep plum (buttons / dark surfaces) */
+  --choco-deep: #281020;  /* deepest plum */
+  --shadow: 0 1px 2px rgba(40,16,34,0.06), 0 8px 24px rgba(40,16,34,0.10);
+  --shadow-lg: 0 20px 60px rgba(40,16,34,0.18);
   --radius: 14px;
   --radius-sm: 8px;
   --serif: 'Cormorant Garamond', Georgia, serif;
@@ -97,7 +99,7 @@ img { max-width: 100%; display: block; }
   height: 64px; width: auto; max-width: 340px; display: block; object-fit: contain;
   background: #fff; padding: 2px 4px; border-radius: 9px;
   border: 1px solid rgba(191,155,48,0.4);
-  box-shadow: 0 1px 4px rgba(42,28,15,0.08);
+  box-shadow: 0 1px 4px rgba(40,16,34,0.08);
 }
 .brand-text {
   font-family: var(--serif); font-size: 21px; font-weight: 600; line-height: 1.1;
@@ -132,7 +134,7 @@ img { max-width: 100%; display: block; }
 /* Light hero — the crown logo is gold + rose on white, so the site chrome is
    warm white too (owner feedback 2026-06-11: the dark brown fought the logo). */
 .hero {
-  background: linear-gradient(135deg, #faf6ee 0%, #f4ecd9 50%, #faf6ee 100%);
+  background: linear-gradient(135deg, #faf6ee 0%, #f5edf1 50%, #faf6ee 100%);
   color: var(--ink); text-align: center; padding: 100px 20px 110px; position: relative; overflow: hidden;
   border-bottom: 1px solid var(--line);
 }
@@ -226,7 +228,7 @@ img { max-width: 100%; display: block; }
   position: absolute; top: calc(100% + 6px); left: 0; z-index: 60;
   width: max-content; min-width: max(100%, 220px); max-width: min(320px, calc(100vw - 32px));
   background: #fff; border: 1px solid var(--line); border-radius: 14px;
-  box-shadow: 0 12px 30px rgba(42, 28, 15, 0.16);
+  box-shadow: 0 12px 30px rgba(40, 16, 34,0.16);
   overflow: hidden;
 }
 /* The size dropdown sits on the right half of the row on mobile — anchor its
@@ -542,7 +544,7 @@ img { max-width: 100%; display: block; }
 .extra-img-remove:hover { background: #800018; }
 
 .badge-sold { position: absolute; top: 14px; left: 14px; background: var(--choco-deep); color: var(--gold); font-size: 11px; letter-spacing: 0.2em; padding: 6px 12px; border-radius: 4px; font-weight: 700; text-transform: uppercase; border: 1px solid var(--gold); }
-.badge-cat { position: absolute; top: 14px; right: 14px; background: rgba(42,28,15,0.78); color: #fff; font-size: 10px; letter-spacing: 0.12em; padding: 4px 10px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
+.badge-cat { position: absolute; top: 14px; right: 14px; background: rgba(40,16,34,0.78); color: #fff; font-size: 10px; letter-spacing: 0.12em; padding: 4px 10px; border-radius: 4px; font-weight: 600; text-transform: uppercase; }
 
 .size-chips { display: flex; flex-wrap: wrap; gap: 5px; align-items: center; }
 .size-chip {
@@ -643,7 +645,7 @@ img { max-width: 100%; display: block; }
 @media (max-width: 760px) { .info-grid { grid-template-columns: 1fr; gap: 40px; } }
 
 /* ===== FOOTER ===== */
-.footer { position: relative; background: linear-gradient(180deg, var(--choco-deep), #0d0a07); color: #e0d3bb; padding: 64px 0 28px; }
+.footer { position: relative; background: linear-gradient(180deg, var(--choco-deep), #0d060b); color: #e7d9e2; padding: 64px 0 28px; }
 .footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px; background: linear-gradient(90deg, transparent, var(--gold) 50%, transparent); opacity: 0.5; }
 .footer-grid { display: grid; grid-template-columns: 1.6fr 1fr 1fr 1.2fr; gap: 40px; }
 .footer-col { min-width: 0; }
@@ -691,7 +693,7 @@ img { max-width: 100%; display: block; }
 }
 
 /* ===== LIGHTBOX ===== */
-.lightbox { position: fixed; inset: 0; background: rgba(42,28,15,0.97); display: none; align-items: center; justify-content: center; z-index: 500; padding: 24px; flex-direction: column; gap: 16px; }
+.lightbox { position: fixed; inset: 0; background: rgba(40,16,34,0.97); display: none; align-items: center; justify-content: center; z-index: 500; padding: 24px; flex-direction: column; gap: 16px; }
 .lightbox.open { display: flex; animation: fadeIn 0.2s; }
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 .lightbox-img { max-width: min(900px, 100%); max-height: 78vh; border-radius: 12px; box-shadow: 0 20px 80px rgba(0,0,0,0.6); }
@@ -1257,7 +1259,7 @@ summary.manual-entry-divider:active .me-pill { transform: translateY(0); }
   padding: 22px 26px 24px;
   margin-bottom: 28px;
   border: 1px solid rgba(191,155,48,0.4);
-  box-shadow: 0 12px 32px rgba(42,28,15,0.18), 0 1px 0 rgba(255,255,255,0.04) inset;
+  box-shadow: 0 12px 32px rgba(40,16,34,0.18), 0 1px 0 rgba(255,255,255,0.04) inset;
   position: relative;
   overflow: hidden;
 }

@@ -852,7 +852,7 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
     const IG_SVG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>';
 
     const css = ('@keyframes imSusFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}'
-      + '#suspendedOverlay{position:fixed;inset:0;z-index:99999;background:radial-gradient(ellipse at top,#3d2817 0%,#2a1c0f 65%);color:#e8dcc4;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;font-family:Inter,system-ui,-apple-system,sans-serif;animation:imSusFade 0.65s ease both;}'
+      + '#suspendedOverlay{position:fixed;inset:0;z-index:99999;background:radial-gradient(ellipse at top,#3a1f33 0%,#281020 65%);color:#efe2ec;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;font-family:Inter,system-ui,-apple-system,sans-serif;animation:imSusFade 0.65s ease both;}'
       + '#suspendedOverlay .im-logo{width:140px;height:140px;border-radius:50%;object-fit:cover;background:#fff;border:2px solid #bf9b30;box-shadow:0 0 36px rgba(191,155,48,0.4),inset 0 0 0 1px rgba(255,255,255,0.04);margin-bottom:26px;}'
       + '#suspendedOverlay .im-name{font-family:\'Cormorant Garamond\',Georgia,serif;font-size:34px;color:#e3cd8f;letter-spacing:2.5px;font-weight:500;line-height:1;margin-bottom:8px;}'
       + '#suspendedOverlay .im-tag{font-size:12px;color:#bf9b30;letter-spacing:2px;text-transform:uppercase;margin-bottom:30px;opacity:0.9;}'
@@ -861,7 +861,7 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
       + '#suspendedOverlay .im-body{font-size:16px;max-width:460px;line-height:1.65;opacity:0.82;margin:0 0 14px;}'
       + '#suspendedOverlay .im-offer{font-size:16px;max-width:460px;line-height:1.6;margin:0 0 30px;color:#e3cd8f;}'
       + '#suspendedOverlay .im-offer b{color:#fff;font-weight:700;}'
-      + '#suspendedOverlay .im-ig{display:inline-flex;align-items:center;gap:10px;background:#bf9b30;color:#2a1c0f;padding:14px 30px;border-radius:999px;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:0.3px;box-shadow:0 6px 24px rgba(191,155,48,0.3);transition:transform 0.2s ease,box-shadow 0.2s ease,background 0.2s ease;}'
+      + '#suspendedOverlay .im-ig{display:inline-flex;align-items:center;gap:10px;background:#bf9b30;color:#281020;padding:14px 30px;border-radius:999px;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:0.3px;box-shadow:0 6px 24px rgba(191,155,48,0.3);transition:transform 0.2s ease,box-shadow 0.2s ease,background 0.2s ease;}'
       + '#suspendedOverlay .im-ig:hover{background:#e3cd8f;transform:translateY(-1px);box-shadow:0 8px 28px rgba(191,155,48,0.42);}'
       + '@media (max-width:480px){#suspendedOverlay .im-logo{width:118px;height:118px;margin-bottom:22px;}#suspendedOverlay .im-name{font-size:28px;letter-spacing:2px;}#suspendedOverlay .im-tag{font-size:11px;margin-bottom:24px;}}'
     );
