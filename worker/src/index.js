@@ -677,13 +677,15 @@ async function runDailyReport(env, force) {
 // name/category/sizes/price/gender from the caption, download the cover image
 // into KV, prepend to the catalog. Runs every morning so new IG posts appear
 // on the site by themselves; the owner can still edit/delete from the admin.
-// Caps at AUTOSYNC_MAX_ITEMS per run to stay inside the free tier's ~50
-// subrequests per invocation (feed + 2 AI calls per candidate + 1 image fetch
-// + 2 KV puts per item) — a backlog simply drains over consecutive mornings.
+// Caps at AUTOSYNC_MAX_ITEMS per run. On Workers Paid (~1,000 subrequests
+// per invocation) a 20-item run costs ~112 (feed + 2 AI calls per candidate
+// + 1 image fetch + 2 KV puts per item) — comfortable. The cap now mostly
+// bounds IG fetch volume per morning so the worker's shared egress IP stays
+// under IG's radar; a bigger backlog drains via the manual widget.
 // Kill switch: KV key `autosync` = {"enabled":false}. Suspended shops skip.
 const IG_AUTOSYNC_USER_ID = "51870726026"; // @iman_high_street
 const API_ORIGIN = "https://iman-high-street-api.stawisystems.workers.dev";
-const AUTOSYNC_MAX_ITEMS = 5;
+const AUTOSYNC_MAX_ITEMS = 20;
 
 async function runIgAutoSync(env) {
   if ((await env.BAGS.get("suspended")) === "1") return { ok: false, skipped: "suspended" };
