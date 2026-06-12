@@ -1,0 +1,10 @@
+.tmp/
+.firecrawl/
+.claude/
+.wrangler/
+.git/
+node_modules/
+__pycache__/
+*.zip
+*.py
+NOTES.md
