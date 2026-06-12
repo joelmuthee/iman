@@ -27,7 +27,8 @@ Brand-new ladies fashion shop (plus some men's formal pieces), CBK Pension Tower
 - Pages: project `iman-high-street`, **production branch `main`** → **https://iman.essenceautomations.com** (custom domain live 2026-06-11; proxied CNAME `iman` in the essenceautomations.com zone; iman-high-street.pages.dev still works underneath). `SITE` in the worker `/p/` route, `SHOP_URL` in admin.js and the OG/canonical URLs in index.html all point at the custom domain.
 - Secrets set: `ADMIN_TOKEN` (in `worker/.admin-token`, gitignored), `MASTER_TOKEN` (fleet), `MASTER_PASSWORD` (fleet). `WASENDER_TOKEN` not set (daily report is Pro-tier; the cron no-ops).
 - Owner login: `iman123` (client-side fallback + worker `FALLBACK_OWNER_PASSWORD`). Agency master works server-side.
-- IG: @iman_high_street, **IG_USER_ID `51870726026`** (hard-coded in admin.js + worker ig-classify default)
+- IG: @iman_high_street, **IG_USER_ID `51870726026`** (hard-coded in admin.js + worker ig-classify default + worker `IG_AUTOSYNC_USER_ID`)
+- **IG auto-sync cron (added 2026-06-12, owner ask):** worker cron `0 6 * * *` (09:00 EAT) runs `runIgAutoSync` — the manual "Check for new posts" pipeline minus the review step (feed fetch → heuristic+vision+text classify → caption parse for name/category/sizes/price/gender → cover image to KV → prepend, `autoSynced: true` on the bag). Capped at 5 items/run (subrequest budget); backlog drains over mornings; never re-adds existing `ig_<shortcode>` ids. Manual trigger: authed `POST /api/autosync-run`. Kill switch: KV `autosync` = `{"enabled":false}`. Suspended shops skip. Cover image only — carousel extras via admin edit.
 - WhatsApp: 254720961246
 - Deploy: `npx wrangler pages deploy . --project-name=iman-high-street --branch=main --commit-dirty=true`; worker via `npx wrangler deploy` in `worker/`. Bump `?v=` on `styles.css`/`admin.js`/`main.js` in BOTH html files on every change.
 

@@ -671,10 +671,118 @@ async function runDailyReport(env, force) {
   return await sendViaWaSender(env, cfg.phone, buildDailyReport(data, stats, Date.now()));
 }
 
+// ---- IG auto-sync (cron) ----
+// Same pipeline as the admin's "Check for new posts" widget, minus the human
+// review step: fetch the feed, AI-classify (heuristic + vision + text), parse
+// name/category/sizes/price/gender from the caption, download the cover image
+// into KV, prepend to the catalog. Runs every morning so new IG posts appear
+// on the site by themselves; the owner can still edit/delete from the admin.
+// Caps at AUTOSYNC_MAX_ITEMS per run to stay inside the free tier's ~50
+// subrequests per invocation (feed + 2 AI calls per candidate + 1 image fetch
+// + 2 KV puts per item) — a backlog simply drains over consecutive mornings.
+// Kill switch: KV key `autosync` = {"enabled":false}. Suspended shops skip.
+const IG_AUTOSYNC_USER_ID = "51870726026"; // @iman_high_street
+const API_ORIGIN = "https://iman-high-street-api.stawisystems.workers.dev";
+const AUTOSYNC_MAX_ITEMS = 5;
+
+async function runIgAutoSync(env) {
+  if ((await env.BAGS.get("suspended")) === "1") return { ok: false, skipped: "suspended" };
+  let cfg;
+  try { cfg = JSON.parse(await env.BAGS.get("autosync")) || {}; } catch { cfg = {}; }
+  if (cfg.enabled === false) return { ok: false, skipped: "disabled" };
+
+  const existingRaw = await env.BAGS.get("data");
+  const data = existingRaw ? JSON.parse(existingRaw) : { bags: [], settings: {} };
+  const existingIds = new Set((data.bags || []).map(b => b.id));
+
+  const feed = await fetchIgFeed({ userId: IG_AUTOSYNC_USER_ID, count: 24 });
+  if (!feed.items) return { ok: false, error: feed.error || "feed empty" };
+
+  // A few extra candidates beyond the cap so non-product posts don't eat the run.
+  const fresh = feed.items
+    .filter(it => it.imageUrl && it.shortcode && !existingIds.has(`ig_${it.shortcode}`))
+    .slice(0, AUTOSYNC_MAX_ITEMS + 3);
+
+  const newBags = [];
+  const skipped = [];
+  for (const it of fresh) {
+    if (newBags.length >= AUTOSYNC_MAX_ITEMS) break;
+    const heuristic = looksLikeProduct(it.caption);
+    const [vision, text] = await Promise.all([
+      classifyPostWithVision(env, it.caption, it.imageUrl),
+      classifyPostWithAi(env, it.caption),
+    ]);
+    const visionOk = vision && !vision._debug;
+    const isProduct = heuristic || (visionOk && vision.is_product) || (text && text.is_product);
+    if (!isProduct) { skipped.push({ shortcode: it.shortcode, reason: "not a product" }); continue; }
+
+    // Same name/category resolution order as /api/ig-discover.
+    const sug = parseCaptionForBag(it.caption);
+    const looksLikeFragment = (n) => !n || /^(size|sizes|tn|hh|nb)$/i.test(String(n).trim());
+    let name = sug.name;
+    if (text?.is_product && !looksLikeFragment(text.name) && text.name !== "New Item") {
+      name = text.name.trim();
+    } else if (visionOk && vision.is_product && !looksLikeFragment(vision.name) && vision.name !== "New Item") {
+      name = vision.name.trim();
+    }
+    let category = coerceCategory(sug.category);
+    if (visionOk && vision.is_product && vision.category) {
+      const c = coerceCategory(vision.category);
+      if (c) category = c;
+    } else if (text?.is_product && text.category) {
+      const c = coerceCategory(text.category);
+      if (c) category = c;
+    }
+    if (!category) category = "Dresses";
+
+    // Cover image only on auto-sync (cheapest safe budget); the owner can add
+    // carousel extras from the admin's edit form whenever they want.
+    try {
+      const r = await fetch(it.imageUrl);
+      if (!r.ok) throw new Error(`image fetch ${r.status}`);
+      const b64 = arrayToB64(new Uint8Array(await r.arrayBuffer()));
+      const fname = `item_${Date.now()}_${Math.random().toString(36).slice(2, 6)}.jpg`;
+      await env.BAGS.put(`img:${fname}`, b64);
+      await env.BAGS.put(`mime:${fname}`, "image/jpeg");
+
+      const stock = Object.keys(sug.stock || {}).length ? sug.stock : { "One Size": 1 };
+      const bag = {
+        id: `ig_${it.shortcode}`,
+        name: (name || "New Item").slice(0, 80),
+        category,
+        description: sug.description,
+        price: sug.price > 0 ? sug.price : 0,
+        stock,
+        sales: [],
+        image: `${API_ORIGIN}/img/${fname}`,
+        createdAt: it.takenAt || new Date().toISOString(),
+        instagramUrl: `https://www.instagram.com/p/${it.shortcode}/`,
+        autoSynced: true,
+      };
+      if (sug.gender === "ladies" || sug.gender === "gents") bag.gender = sug.gender;
+      newBags.push(bag);
+      existingIds.add(bag.id);
+    } catch (e) {
+      skipped.push({ shortcode: it.shortcode, reason: e.message });
+    }
+  }
+
+  if (newBags.length) {
+    data.bags = newBags.concat(data.bags);
+    await env.BAGS.put("data", JSON.stringify(data));
+  }
+  return { ok: true, added: newBags.length, names: newBags.map(b => b.name), skipped };
+}
+
 export default {
-  // Cloudflare Cron Trigger (see wrangler.toml [triggers]). Fires 17:00 UTC =
-  // 20:00 EAT. No-ops unless the owner has enabled the report + set a phone.
+  // Cloudflare Cron Triggers (see wrangler.toml [triggers]).
+  //   "0 6 * * *"  = 09:00 EAT → IG auto-sync (new posts add themselves)
+  //   "0 17 * * *" = 20:00 EAT → daily WhatsApp report (no-ops unless enabled)
   async scheduled(event, env, ctx) {
+    if (event.cron === "0 6 * * *") {
+      ctx.waitUntil(runIgAutoSync(env));
+      return;
+    }
     ctx.waitUntil(runDailyReport(env, false));
   },
 
@@ -891,6 +999,14 @@ export default {
     }
 
     // Owner-triggered "send a test report right now" (also used to preview copy).
+    // Admin: run the IG auto-sync on demand (same code the morning cron runs).
+    if (request.method === "POST" && path === "/api/autosync-run") {
+      if (!isAuthed(request, env)) return json({ error: "unauthorized" }, 401);
+      const blocked = await suspendBlock(request, env); if (blocked) return blocked;
+      const res = await runIgAutoSync(env);
+      return json(res, res.ok ? 200 : 400);
+    }
+
     if (request.method === "POST" && path === "/api/report-test") {
       if (!isAuthed(request, env)) return json({ error: "unauthorized" }, 401);
       const blocked = await suspendBlock(request, env); if (blocked) return blocked;
