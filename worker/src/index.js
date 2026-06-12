@@ -675,8 +675,8 @@ async function runDailyReport(env, force) {
 // Same pipeline as the admin's "Check for new posts" widget, minus the human
 // review step: fetch the feed, AI-classify (heuristic + vision + text), parse
 // name/category/sizes/price/gender from the caption, download the cover image
-// into KV, prepend to the catalog. Runs every morning so new IG posts appear
-// on the site by themselves; the owner can still edit/delete from the admin.
+// into KV, prepend to the catalog. Runs on the fleet's afternoon + evening
+// waves; the owner can still edit/delete from the admin.
 // Caps at AUTOSYNC_MAX_ITEMS per run. On Workers Paid (~1,000 subrequests
 // per invocation) a 20-item run costs ~112 (feed + 2 AI calls per candidate
 // + 1 image fetch + 2 KV puts per item) — comfortable. The cap now mostly
@@ -778,14 +778,14 @@ async function runIgAutoSync(env) {
 
 export default {
   // Cloudflare Cron Triggers (see wrangler.toml [triggers]).
-  //   "0 6 * * *"  = 09:00 EAT → IG auto-sync (new posts add themselves)
-  //   "0 17 * * *" = 20:00 EAT → daily WhatsApp report (no-ops unless enabled)
+  //   "0 17 * * *" (20:00 EAT) → daily WhatsApp report (no-ops unless enabled)
+  //   any other cron → IG auto-sync waves (currently a KV-disabled no-op here)
   async scheduled(event, env, ctx) {
-    if (event.cron === "0 6 * * *") {
-      ctx.waitUntil(runIgAutoSync(env));
+    if (event.cron === "0 17 * * *") {
+      ctx.waitUntil(runDailyReport(env, false));
       return;
     }
-    ctx.waitUntil(runDailyReport(env, false));
+    ctx.waitUntil(runIgAutoSync(env));
   },
 
   async fetch(request, env) {
