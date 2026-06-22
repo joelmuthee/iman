@@ -807,6 +807,23 @@ html { scroll-behavior: smooth; }
 /* Sales dashboard */
 .dash { background: #fff; border: 1px solid var(--line); border-radius: 14px; padding: 24px; margin-bottom: 24px; }
 .dash-title { font-family: var(--serif); font-size: 26px; font-weight: 500; margin: 0 0 18px; color: var(--ink); }
+
+/* -- collapsible dashboard section (WhatsApp Marketing, Expenses) -- */
+.dash-collapse { margin: 0; }
+summary.dash-summary {
+  display: block; list-style: none; cursor: pointer; user-select: none; position: relative;
+}
+summary.dash-summary::-webkit-details-marker { display: none; }
+summary.dash-summary::marker { content: ""; }
+summary.dash-summary .dash-title { margin-bottom: 0; padding-right: 28px; }
+.dash-collapse[open] summary.dash-summary .dash-title { margin-bottom: 18px; }
+summary.dash-summary::after {
+  content: "\203A"; position: absolute; right: 2px; top: 8px;
+  font-size: 24px; line-height: 1; color: var(--gold-deep);
+  transform: rotate(90deg); transition: transform 0.18s ease;
+}
+.dash-collapse[open] summary.dash-summary::after { transform: rotate(-90deg); }
+summary.dash-summary:hover .dash-title { color: var(--gold-deep); }
 .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; margin-bottom: 24px; }
 .kpi-card { background: linear-gradient(135deg, var(--choco-deep), var(--choco)); color: var(--gold-light); border-radius: 12px; padding: 18px 20px; }
 .kpi-card:nth-child(2) { background: linear-gradient(135deg, var(--gold-deep), var(--gold)); color: var(--choco-deep); }
@@ -1542,4 +1559,56 @@ summary.manual-entry-divider:active .me-pill { transform: translateY(0); }
   .rcpt-total { font-weight: 700; font-size: 14px; }
   .rcpt-date { text-align: center; font-size: 10px; margin-top: 6px; }
   .rcpt-foot { text-align: center; margin-top: 8px; font-style: italic; }
+}
+
+/* ===== Plan pill + upgrade card (Basic / Shopfront tier) — 2026-06-12 =====
+   Owner-facing nudge toward the paid Shop Manager plans. Remove both on
+   upgrade. Honest: names tools that aren't active on this plan. */
+.plan-pill {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 7px 14px; border-radius: 999px;
+  border: 1px solid var(--gold); color: var(--gold);
+  background: transparent; text-decoration: none;
+  font-size: 12px; font-weight: 600; letter-spacing: 0.04em; white-space: nowrap;
+  transition: background 0.18s, color 0.18s, transform 0.18s;
+}
+.plan-pill:hover { background: var(--gold); color: #fff; transform: translateY(-1px); }
+
+.upgrade-card {
+  margin: 34px 0 8px; padding: 26px 28px; border-radius: 16px;
+  background: linear-gradient(135deg, var(--ink) 0%, #232c47 100%);
+  color: #f3efe5;
+  display: flex; gap: 28px; align-items: center; justify-content: space-between;
+  flex-wrap: wrap;
+  box-shadow: 0 8px 28px rgba(26,34,56,0.18);
+}
+.upgrade-card-body { flex: 1 1 320px; min-width: 280px; }
+.upgrade-card h2 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: 26px; font-weight: 600; margin: 0 0 6px; color: #fff;
+}
+.upgrade-card p { margin: 0 0 14px; font-size: 14px; line-height: 1.5; color: #d7d2c4; }
+.upgrade-feats {
+  list-style: none; padding: 0; margin: 0;
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px 22px;
+}
+.upgrade-feats li {
+  position: relative; padding-left: 24px; font-size: 13.5px; color: #ece8dc;
+}
+.upgrade-feats li::before {
+  content: "✓"; position: absolute; left: 0; top: 0;
+  color: var(--rose); font-weight: 700;
+}
+.upgrade-card-cta {
+  flex: 0 0 auto; display: flex; flex-direction: column; align-items: flex-start; gap: 10px;
+}
+.upgrade-card-cta .btn-admin.gold { font-size: 14px; padding: 12px 22px; }
+.upgrade-note { font-size: 12px; color: #b9b4a6; max-width: 220px; }
+
+@media (max-width: 620px) {
+  .upgrade-card { flex-direction: column; align-items: stretch; gap: 18px; padding: 22px 20px; }
+  .upgrade-feats { grid-template-columns: 1fr; }
+  .upgrade-card-cta { align-items: stretch; }
+  .upgrade-card-cta .btn-admin.gold { text-align: center; }
+  .upgrade-note { max-width: none; }
 }

@@ -521,6 +521,15 @@ document.getElementById('manualEntryDivider')?.addEventListener('click', (e) => 
   if (manualEntry) manualEntry.open = !manualEntry.open;
 });
 
+// Mobile-safe collapsible dashboard sections (WhatsApp Marketing, Expenses):
+// JS-driven toggle + nav-link auto-open, never native <summary> click handling.
+[['broadcastCollapse', 'broadcastDash'], ['expensesCollapse', 'expensesDash']].forEach(([colId, dashId]) => {
+  const col = document.getElementById(colId);
+  const summary = col?.querySelector('summary.dash-summary');
+  if (summary) summary.addEventListener('click', (e) => { e.preventDefault(); col.open = !col.open; });
+  document.querySelector(`.admin-nav a[href="#${dashId}"]`)?.addEventListener('click', () => { if (col) col.open = true; });
+});
+
 // ====== AI DESCRIPTION ======
 document.getElementById('aiBtn').addEventListener('click', () => {
   const name = document.getElementById('nameInput').value.trim();
@@ -3077,7 +3086,130 @@ function showPosReceipt(s) {
     wa.href = `https://wa.me/${posWaPhone(s.buyerPhone)}?text=${encodeURIComponent(posReceiptText(s))}`;
     wa.style.display = '';
   } else { wa.style.display = 'none'; }
+  const imgBtn = document.getElementById('posImgReceiptBtn'); // Shop Manager (5k)+ only
+  if (imgBtn) imgBtn.style.display = RECEIPT_IMAGE_ENABLED ? '' : 'none';
   document.getElementById('posReceiptPanel').style.display = '';
+}
+
+// ===== Branded image receipt (Shop Manager 5k) — a logo + brand-colour PNG the
+// owner shares to the customer's WhatsApp. Pure canvas (no DOM-snapshot library:
+// those glitch in the WhatsApp in-app webview). Logo is same-origin so the export
+// never taints. Falls back to a download when file-share isn't supported. =====
+const RECEIPT_IMAGE_ENABLED = true; // 5k trial (Iman, 2026-06-18) — flip false on downgrade
+let _receiptLogo;
+function loadReceiptLogo() {
+  if (_receiptLogo !== undefined) return Promise.resolve(_receiptLogo || null);
+  return new Promise((res) => {
+    const img = new Image();
+    img.onload = () => { _receiptLogo = img; res(img); };
+    img.onerror = () => { _receiptLogo = false; res(null); };
+    img.src = 'images/logo.jpg';
+  });
+}
+
+function buildReceiptCanvas(s, logoImg) {
+  const SCALE = 3, W = 620, M = 44;
+  const hasBal = s.balance > 0;
+  const seg = { top: 34, logo: logoImg ? 132 : 88, caption: 30, addr: 34, div1: 26,
+    item: 64, div2: 26, total: 52, cust: s.buyerName ? 34 : 0, paid: 34, bal: hasBal ? 70 : 0, date: 38, foot: 60, bottom: 30 };
+  const H = Object.values(seg).reduce((a, b) => a + b, 0);
+  const c = document.createElement('canvas');
+  c.width = W * SCALE; c.height = H * SCALE;
+  const x = c.getContext('2d');
+  x.scale(SCALE, SCALE);
+  const trunc = (t, n) => { t = String(t || ''); return t.length > n ? t.slice(0, n - 1) + '…' : t; };
+
+  x.fillStyle = '#fffaf6'; x.fillRect(0, 0, W, H);
+  x.fillStyle = '#c9748f'; x.fillRect(0, 0, W, 6);   // rose top bar (crown gems)
+  let y = seg.top;
+
+  x.textAlign = 'center';
+  if (logoImg) {
+    const lw = 150, lh = Math.min(lw * (logoImg.height / logoImg.width || 1), 118);
+    x.drawImage(logoImg, (W - lw) / 2, y, lw, lh);
+  } else {
+    x.fillStyle = '#2a2630'; x.font = '600 32px Georgia, serif';
+    x.fillText('Iman High Street', W / 2, y + 40);
+  }
+  y += seg.logo;
+
+  x.fillStyle = '#b06a82'; x.font = '600 15px Arial';
+  x.fillText('S A L E   R E C E I P T', W / 2, y); y += seg.caption;
+
+  x.fillStyle = '#8a7a82'; x.font = '13px Arial';
+  x.fillText('CBK Pension Towers, Ground Floor, Harambee Avenue, Nairobi', W / 2, y); y += seg.addr;
+
+  const div = () => { x.strokeStyle = '#ecdfe4'; x.lineWidth = 1; x.beginPath(); x.moveTo(M, y); x.lineTo(W - M, y); x.stroke(); };
+  div(); y += seg.div1;
+
+  const total = s.amount * s.qty;
+  x.textAlign = 'left'; x.fillStyle = '#2a2630'; x.font = '600 18px Arial';
+  x.fillText(trunc(s.name, 32), M, y + 6);
+  x.fillStyle = '#8a7a82'; x.font = '14px Arial';
+  x.fillText(`Size ${s.size} · ${s.qty} × ${fmtKsh(s.amount)}`, M, y + 30);
+  x.textAlign = 'right'; x.fillStyle = '#2a2630'; x.font = '600 18px Arial';
+  x.fillText(fmtKsh(total), W - M, y + 30); y += seg.item;
+
+  x.textAlign = 'left'; div(); y += seg.div2;
+
+  x.fillStyle = '#2a2630'; x.font = '700 22px Arial'; x.fillText('TOTAL', M, y + 8);
+  x.textAlign = 'right'; x.fillStyle = '#b06a82'; x.font = '700 24px Arial';
+  x.fillText(fmtKsh(total), W - M, y + 8); y += seg.total;
+
+  if (s.buyerName) {
+    x.textAlign = 'left'; x.fillStyle = '#4a4048'; x.font = '15px Arial'; x.fillText('Customer', M, y);
+    x.textAlign = 'right'; x.fillStyle = '#2a2630'; x.font = '600 15px Arial';
+    x.fillText(trunc(s.buyerName, 26), W - M, y); y += seg.cust;
+  }
+
+  x.textAlign = 'left'; x.fillStyle = '#4a4048'; x.font = '15px Arial'; x.fillText('Paid by', M, y);
+  x.textAlign = 'right'; x.fillStyle = '#2a2630'; x.font = '600 15px Arial';
+  x.fillText(s.paymentMethod === 'mpesa' ? 'M-Pesa' : 'Cash', W - M, y); y += seg.paid;
+
+  if (hasBal) {
+    x.textAlign = 'left'; x.fillStyle = '#4a4048'; x.font = '15px Arial'; x.fillText('Paid now', M, y);
+    x.textAlign = 'right'; x.fillStyle = '#2a2630'; x.font = '600 15px Arial'; x.fillText(fmtKsh(s.paid), W - M, y); y += 34;
+    x.textAlign = 'left'; x.fillStyle = '#b00020'; x.font = '700 16px Arial'; x.fillText('BALANCE OWING', M, y);
+    x.textAlign = 'right'; x.fillText(fmtKsh(s.balance), W - M, y); y += 36;
+  }
+
+  x.textAlign = 'center'; x.fillStyle = '#8a7a82'; x.font = '13px Arial';
+  x.fillText(new Date(s.soldAt || Date.now()).toLocaleString('en-GB', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' }), W / 2, y); y += seg.date;
+
+  x.fillStyle = '#b06a82'; x.font = 'italic 16px Georgia, serif';
+  x.fillText('Thank you for shopping with us', W / 2, y);
+  x.fillStyle = '#c9748f'; x.font = '600 13px Arial';
+  x.fillText('iman.essenceautomations.com', W / 2, y + 24);
+  return c;
+}
+
+async function posShareReceiptImage() {
+  if (!lastPosSale) return;
+  const btn = document.getElementById('posImgReceiptBtn');
+  const orig = btn ? btn.textContent : '';
+  if (btn) { btn.disabled = true; btn.textContent = 'Preparing…'; }
+  try {
+    const logo = await loadReceiptLogo();
+    const canvas = buildReceiptCanvas(lastPosSale, logo);
+    const blob = await new Promise(res => canvas.toBlob(res, 'image/png'));
+    if (!blob) throw new Error('render failed');
+    const fname = `iman-receipt-${(lastPosSale.name || 'sale').replace(/[^a-z0-9]+/gi, '-').toLowerCase().slice(0, 32)}.png`;
+    const file = new File([blob], fname, { type: 'image/png' });
+    if (navigator.canShare && navigator.canShare({ files: [file] })) {
+      await navigator.share({ files: [file], title: 'Iman High Street receipt', text: posReceiptText(lastPosSale) });
+    } else {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = fname;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(() => URL.revokeObjectURL(url), 5000);
+      showToast('Receipt image saved to your phone — attach it in WhatsApp.');
+    }
+  } catch (e) {
+    if (e && e.name === 'AbortError') return; // owner closed the share sheet
+    showToast('Could not make the receipt image: ' + (e.message || e));
+  } finally {
+    if (btn) { btn.disabled = false; btn.textContent = orig; }
+  }
 }
 
 function posPrintReceipt() {
@@ -3169,5 +3301,6 @@ document.getElementById('posRecordBtn')?.addEventListener('click', recordPosSale
 document.getElementById('posCancelBtn')?.addEventListener('click', posReset);
 document.getElementById('posNewSaleBtn')?.addEventListener('click', posReset);
 document.getElementById('posPrintReceiptBtn')?.addEventListener('click', posPrintReceipt);
+document.getElementById('posImgReceiptBtn')?.addEventListener('click', posShareReceiptImage);
 
 checkAuth();
