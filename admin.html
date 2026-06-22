@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#11172a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=13">
+<link rel="stylesheet" href="styles.css?v=14">
 </head>
 <body style="background:var(--bg);">
 
@@ -31,6 +31,8 @@
   <div class="admin-header">
     <h1>Iman High Street Admin</h1>
     <div class="admin-actions">
+      <!-- Plan pill (Basic / Shopfront). Remove this whole <a> on upgrade. -->
+      <a class="plan-pill" href="https://essenceautomations.com/shop-manager/#pricing" target="_blank" rel="noopener" title="See what else your shop can do">✦ Shopfront plan</a>
       <a class="btn-admin" href="index.html" target="_blank">View store →</a>
       <button class="btn-admin" id="changePasswordBtn" type="button">🔑 Change password</button>
       <button class="btn-admin danger" id="logoutBtn">Logout</button>
@@ -75,15 +77,16 @@
          data entry is never gated (owner decision 2026-06-11), so the history
          is there on upgrade. Hidden, not removed: upgrade = remove these
          display:none + the ones on the matching <section>s below. -->
-    <a href="#salesDash" style="display:none;">Sales</a>
-    <a href="#invDash" style="display:none;">Inventory</a>
+    <a href="#salesDash">Sales</a>
+    <a href="#invDash">Inventory</a>
     <!-- Tier gate (Shop Records): WhatsApp Marketing / Clients / Insights /
          Daily report are 5k+ features. Hidden, not removed — the worker still
          captures everything, so an upgrade is just removing display:none. -->
-    <a href="#broadcastDash" style="display:none;">WhatsApp Marketing</a>
-    <a href="#clientsDash" id="clientsNavLink" style="display:none;">Clients <span class="admin-nav-count" id="navClientsCount"></span><span class="admin-nav-new" id="clientsNavNew">NEW</span></a>
-    <a href="#owedDash" id="owedNavLink" style="display:none;">Owed <span class="admin-nav-count" id="navOwedCount"></span><span class="admin-nav-new" id="owedNavNew">NEW</span></a>
-    <a href="#insightsDash" style="display:none;">Insights</a>
+    <a href="#broadcastDash">WhatsApp Marketing</a>
+    <a href="#clientsDash" id="clientsNavLink">Clients <span class="admin-nav-count" id="navClientsCount"></span><span class="admin-nav-new" id="clientsNavNew">NEW</span></a>
+    <a href="#expensesDash">Expenses <span class="admin-nav-new">NEW</span></a>
+    <a href="#owedDash" id="owedNavLink">Owed <span class="admin-nav-count" id="navOwedCount"></span><span class="admin-nav-new" id="owedNavNew">NEW</span></a>
+    <a href="#insightsDash">Insights</a>
     <a href="#reportDash" style="display:none;">Daily report</a>
     <a href="#allItems">All items <span class="admin-nav-count" id="navItemCount"></span></a>
   </nav>
@@ -157,7 +160,7 @@
   </section>
 
   <!-- ====== SALES DASHBOARD ====== -->
-  <section class="dash" id="salesDash" style="display:none;">
+  <section class="dash" id="salesDash">
     <h2 class="dash-title">Sales Overview</h2>
     <div class="kpi-grid" id="kpiGrid"></div>
     <div class="dash-grid">
@@ -173,7 +176,7 @@
   </section>
 
   <!-- ====== INVENTORY DASHBOARD ====== -->
-  <section class="dash" id="invDash" style="display:none;">
+  <section class="dash" id="invDash">
     <h2 class="dash-title">Inventory Overview</h2>
     <div class="inv-kpi-grid" id="invKpiGrid"></div>
     <div class="section-divider">Stock levels <span id="invSortLabel">sorted low → high</span></div>
@@ -199,7 +202,7 @@
   </section>
 
   <!-- ====== WHATSAPP BROADCAST ====== -->
-  <section class="dash" id="broadcastDash" style="display:none;">
+  <section class="dash" id="broadcastDash">
     <h2 class="dash-title">WhatsApp Marketing</h2>
     <div style="background:var(--surface);border:1px solid var(--line);border-left:4px solid var(--rose);border-radius:8px;padding:12px 14px;margin:0 0 16px;font-size:13px;line-height:1.55;color:var(--ink-soft);">
       <strong style="display:block;color:var(--ink);margin-bottom:3px;">⏳ Why this sends one message at a time</strong>
@@ -242,7 +245,7 @@
   </section>
 
   <!-- ====== CLIENTS ====== -->
-  <section class="dash" id="clientsDash" style="display:none;">
+  <section class="dash" id="clientsDash">
     <h2 class="dash-title">Clients</h2>
     <p style="font-size:13px;color:var(--ink-soft);margin:-8px 0 16px;">Everyone who's bought from you, with what they bought and how to reach them. Save a buyer's name and phone when you record a sale, and they'll appear here so you can message them when new stock lands.</p>
     <div class="inv-kpi-grid" id="clientsKpiGrid"></div>
@@ -258,8 +261,49 @@
     <div id="clientsList" class="clients-list"></div>
   </section>
 
+  <!-- ====== EXPENSES ====== -->
+  <section class="dash" id="expensesDash">
+    <h2 class="dash-title">Expenses</h2>
+    <p style="font-size:13px;color:var(--ink-soft);margin:-8px 0 16px;">Track what you spend running the shop — Instagram ads, packaging, transport. See your real profit after costs on the Sales dashboard. These figures are private and never shown on your store.</p>
+    <div class="inv-kpi-grid" id="expKpiGrid"></div>
+    <details id="expFormWrap" style="margin:16px 0;border:1px solid #ece6dc;border-radius:10px;background:#fffdf8;">
+      <summary style="cursor:pointer;padding:12px 14px;font-weight:600;color:#1c1208;list-style:none;">+ Add an expense</summary>
+      <div style="padding:0 14px 16px;">
+        <div class="field"><label>What was it for?</label><input id="expLabel" type="text" placeholder="e.g. Instagram ads" autocomplete="off"></div>
+        <div class="pos-row" style="display:flex;gap:12px;flex-wrap:wrap;">
+          <div class="field" style="flex:1 1 140px;"><label>Amount (Ksh)</label><input id="expAmount" type="number" min="0" step="50" placeholder="0"></div>
+          <div class="field" style="flex:1 1 160px;"><label>Category</label><select id="expCategory"></select><input id="expCategoryNew" type="text" placeholder="New category name" style="display:none;margin-top:6px;" autocomplete="off"></div>
+        </div>
+        <div class="field">
+          <label>Type</label>
+          <div class="pos-pay" id="expTypeToggle">
+            <button type="button" class="pos-pay-btn active" data-exptype="oneoff">One-off</button>
+            <button type="button" class="pos-pay-btn" data-exptype="recurring">Recurring</button>
+          </div>
+        </div>
+        <div id="expOneoffFields">
+          <div class="field"><label>Date</label><input id="expDate" type="date"></div>
+        </div>
+        <div id="expRecurringFields" style="display:none;">
+          <div class="pos-row" style="display:flex;gap:12px;flex-wrap:wrap;">
+            <div class="field" style="flex:1 1 140px;"><label>Every</label><select id="expCadence"><option value="daily">Day</option><option value="weekly">Week</option><option value="monthly">Month</option></select></div>
+            <div class="field" style="flex:1 1 160px;"><label>Started on</label><input id="expStartDate" type="date"></div>
+          </div>
+          <label style="display:flex;align-items:center;gap:8px;font-size:13.5px;color:#4a4540;margin:2px 0 6px;"><input id="expActive" type="checkbox" checked style="width:auto;"> Still running (untick when you stop this spend)</label>
+          <p style="font-size:12px;color:#8a857f;margin:0 0 6px;">Recurring spend is an estimate that grows automatically. For Instagram, where Meta deducts different amounts every few days, logging each actual deduction as a one-off is more exact.</p>
+        </div>
+        <div class="field"><label>Note (optional)</label><input id="expNote" type="text" placeholder="optional" autocomplete="off"></div>
+        <div class="admin-actions">
+          <button class="btn-admin primary" id="expSaveBtn" type="button">Save expense</button>
+          <button class="btn-admin" id="expCancelBtn" type="button">Cancel</button>
+        </div>
+      </div>
+    </details>
+    <div id="expList" class="clients-list"></div>
+  </section>
+
   <!-- ====== MONEY OWED — customers buying on credit / pay later ====== -->
-  <section class="dash" id="owedDash" style="display:none;">
+  <section class="dash" id="owedDash">
     <h2 class="dash-title">Money owed</h2>
     <p style="font-size:13px;color:var(--ink-soft);margin:-8px 0 16px;">Customers who took items but haven't paid in full yet. When you record a sale and they pay less than the price, the rest shows up here so you can keep track and chase it. Record a payment whenever they pay you something.</p>
     <div class="inv-kpi-grid" id="owedKpiGrid"></div>
@@ -270,7 +314,7 @@
   </section>
 
   <!-- ====== INSIGHTS (per-browser) ====== -->
-  <section class="dash" id="insightsDash" style="display:none;">
+  <section class="dash" id="insightsDash">
     <h2 class="dash-title">Insights <small style="font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:0.08em;color:var(--ink-faint);text-transform:uppercase;margin-left:6px;">Whole shop · all visitors</small></h2>
     <p style="font-size:13px;color:var(--ink-soft);margin:-8px 0 16px;">What shoppers are doing on your store, added up across everyone who visits, on any phone or computer. The numbers update a few seconds after someone views an item, saves it, asks about it, or searches.</p>
     <div class="inv-kpi-grid" id="insightsKpiGrid"></div>
@@ -530,6 +574,27 @@
   </div>
   <div class="admin-list" id="adminList"></div>
 
+  <!-- ====== UPGRADE CARD (Basic / Shopfront tier) ======
+       Quiet footer nudge: names the tools that are NOT on this plan, links to
+       pricing. Honest framing — the worker already captures the data behind
+       these, so an upgrade just reveals them. Remove this whole <section> on
+       upgrade (same idea as removing the display:none gates above). -->
+  <section class="upgrade-card" id="upgradeCard">
+    <div class="upgrade-card-body">
+      <h2>Get more from your shop</h2>
+      <p>You're on the one-off Shopfront package. These tools come with a monthly Shop Manager plan:</p>
+      <ul class="upgrade-feats">
+        <li>Live sales &amp; revenue tracking</li>
+        <li>Your client book</li>
+        <li>Demand insights</li>
+        <li>WhatsApp marketing to buyers</li>
+      </ul>
+    </div>
+    <div class="upgrade-card-cta">
+      <a class="btn-admin gold" href="https://essenceautomations.com/shop-manager/#pricing" target="_blank" rel="noopener">See plans &amp; pricing →</a>
+      <span class="upgrade-note">From Ksh 5,000 a month. No pressure, have a look.</span>
+    </div>
+  </section>
 
 </div><!-- /dashboard -->
 
@@ -851,6 +916,6 @@
   </div>
 </div>
 
-<script src="admin.js?v=20260612toast"></script>
+<script src="admin.js?v=20260618exp"></script>
 </body>
 </html>
