@@ -198,6 +198,11 @@ function parseCaptionForBag(caption) {
     name = first ? first.slice(0, 60).replace(/\b\w/g, c => c.toUpperCase()) : "New Item";
   }
 
+  // New products start at 3 of each size FOUND in the caption (owner restocks
+  // from there). The "One Size" fallback below stays at 1 — it's a "no size
+  // info" placeholder, not a size the caption actually provided. Fleet standard
+  // for new-stock shops (2026-06-18).
+  const NEW_SIZE_QTY = 3;
   const stock = {};
 
   // Strip price tokens BEFORE size scanning so "@21,000" can't bleed a "21"
@@ -212,11 +217,11 @@ function parseCaptionForBag(caption) {
   if (letterRange) {
     const a = LETTERS.indexOf(normLetter(letterRange[1]));
     const b = LETTERS.indexOf(normLetter(letterRange[2]));
-    if (a >= 0 && b >= a) for (let i = a; i <= b; i++) stock[LETTERS[i]] = 1;
+    if (a >= 0 && b >= a) for (let i = a; i <= b; i++) stock[LETTERS[i]] = NEW_SIZE_QTY;
   } else {
     for (const sz of ["XS", "XXL", "XXXL", "2XL", "3XL", "4XL", "5XL", "S", "M", "L", "XL"]) {
       const re = new RegExp(`(?:^|\\s|[^a-z0-9])${sz.toLowerCase()}(?=$|\\s|[^a-z0-9])`);
-      if (re.test(padded)) stock[normLetter(sz)] = 1;
+      if (re.test(padded)) stock[normLetter(sz)] = NEW_SIZE_QTY;
     }
   }
 
@@ -227,9 +232,9 @@ function parseCaptionForBag(caption) {
   const isFoot = /heels?|stilettos?|wedges?|sneakers?|trainers?|loafers?|sandals?|boots?|shoes?/i.test(text)
     || /^(Shoes|Heels)$/.test(category || "");
   const isSuit = /suits?|blaze[rs]/i.test(lower);
-  const addShoe = (n) => { if (n >= 35 && n <= 46) stock[`EU${n}`] = 1; };
-  const addDress = (n) => { if (n >= 6 && n <= 18 && n % 2 === 0) stock[String(n)] = 1; };
-  const addSuit = (n) => { if (n >= 34 && n <= 58 && n % 2 === 0) stock[String(n)] = 1; };
+  const addShoe = (n) => { if (n >= 35 && n <= 46) stock[`EU${n}`] = NEW_SIZE_QTY; };
+  const addDress = (n) => { if (n >= 6 && n <= 18 && n % 2 === 0) stock[String(n)] = NEW_SIZE_QTY; };
+  const addSuit = (n) => { if (n >= 34 && n <= 58 && n % 2 === 0) stock[String(n)] = NEW_SIZE_QTY; };
   let m;
   const ranges = [];
   const rangeRe = /\b(\d{1,2})\s*(?:-|–|to)\s*(\d{1,2})\b/g;
@@ -696,13 +701,17 @@ async function runIgAutoSync(env) {
   const existingRaw = await env.BAGS.get("data");
   const data = existingRaw ? JSON.parse(existingRaw) : { bags: [], settings: {} };
   const existingIds = new Set((data.bags || []).map(b => b.id));
+  // Permanent "already pulled" ledger — the tombstone the in-catalog check can't
+  // be, so the cron never resurrects items the owner deleted (Ryker bug 2026-06-16).
+  const ledgerRaw = await env.BAGS.get("ig_synced_codes");
+  const syncedCodes = new Set(ledgerRaw ? JSON.parse(ledgerRaw) : []);
 
   const feed = await fetchIgFeed({ userId: IG_AUTOSYNC_USER_ID, count: 24 });
   if (!feed.items) return { ok: false, error: feed.error || "feed empty" };
 
   // A few extra candidates beyond the cap so non-product posts don't eat the run.
   const fresh = feed.items
-    .filter(it => it.imageUrl && it.shortcode && !existingIds.has(`ig_${it.shortcode}`))
+    .filter(it => it.imageUrl && it.shortcode && !existingIds.has(`ig_${it.shortcode}`) && !syncedCodes.has(it.shortcode))
     .slice(0, AUTOSYNC_MAX_ITEMS + 3);
 
   const newBags = [];
@@ -772,6 +781,9 @@ async function runIgAutoSync(env) {
   if (newBags.length) {
     data.bags = newBags.concat(data.bags);
     await env.BAGS.put("data", JSON.stringify(data));
+    // Tombstone every committed shortcode so deleting it later can't bring it back.
+    for (const b of newBags) syncedCodes.add(b.id.slice(3));
+    await env.BAGS.put("ig_synced_codes", JSON.stringify([...syncedCodes]));
   }
   return { ok: true, added: newBags.length, names: newBags.map(b => b.name), skipped };
 }
@@ -1269,11 +1281,15 @@ export default {
         const existingRaw = await env.BAGS.get("data");
         const existing = existingRaw ? JSON.parse(existingRaw) : { bags: [] };
         const existingIds = new Set((existing.bags || []).map(b => b.id));
+        // Hide posts already pulled once (even if since deleted) so the widget
+        // shows only genuinely-new posts, never re-surfaces what the owner removed.
+        const ledgerRaw = await env.BAGS.get("ig_synced_codes");
+        const syncedCodes = new Set(ledgerRaw ? JSON.parse(ledgerRaw) : []);
 
         const feedData = await fetchIgFeed({ username, userId: directUserId, count: 50 });
         if (!feedData.items) return json({ error: feedData.error || "feed empty" }, 502);
 
-        const fresh = feedData.items.filter(it => !existingIds.has(`ig_${it.shortcode}`)).slice(0, limit * 2);
+        const fresh = feedData.items.filter(it => !existingIds.has(`ig_${it.shortcode}`) && !syncedCodes.has(it.shortcode)).slice(0, limit * 2);
         const classified = await Promise.all(fresh.map(async (it) => {
           const heuristic = looksLikeProduct(it.caption);
           const [vision, text] = await Promise.all([
@@ -1361,6 +1377,9 @@ export default {
       const existingRaw = await env.BAGS.get("data");
       const data = existingRaw ? JSON.parse(existingRaw) : { bags: [], settings: {} };
       const existingIds = new Set(data.bags.map(b => b.id));
+      const existingIgUrls = new Set(data.bags.map(b => b.instagramUrl).filter(Boolean));
+      const ledgerRaw = await env.BAGS.get("ig_synced_codes");
+      const syncedCodes = new Set(ledgerRaw ? JSON.parse(ledgerRaw) : []);
 
       const added = [];
       const errors = [];
@@ -1368,7 +1387,8 @@ export default {
 
       for (const it of items) {
         const id = `ig_${it.shortcode}`;
-        if (existingIds.has(id)) { errors.push({ shortcode: it.shortcode, reason: "already in catalog" }); continue; }
+        const igUrl = `https://www.instagram.com/p/${it.shortcode}/`;
+        if (existingIds.has(id) || syncedCodes.has(it.shortcode) || existingIgUrls.has(igUrl)) { errors.push({ shortcode: it.shortcode, reason: "already synced" }); continue; }
         const urls = (it.imageUrls || []).slice(0, 4);
         if (!urls.length) { errors.push({ shortcode: it.shortcode, reason: "no images" }); continue; }
         const uploaded = [];
@@ -1424,6 +1444,8 @@ export default {
       // Newest first — prepend to the catalog
       data.bags = newBags.concat(data.bags);
       await env.BAGS.put("data", JSON.stringify(data));
+      for (const it of items) syncedCodes.add(it.shortcode);
+      await env.BAGS.put("ig_synced_codes", JSON.stringify([...syncedCodes]));
       return json({ ok: true, added: added.length, errors, items: added });
     }
 
