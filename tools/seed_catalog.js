@@ -11,7 +11,7 @@
 //   cap (each image = 1 fetch + 2 KV puts), oldest chunk first so the
 //   prepend-per-call keeps the catalog newest-first overall
 //
-// Usage: node tools/seed_catalog.js [--dry] [--max-images N]
+// Usage: node tools/seed_catalog.js [--dry] [--max-images N] [--kv-limit N]
 const fs = require('fs');
 const path = require('path');
 
@@ -20,6 +20,8 @@ const TOKEN = fs.readFileSync(path.join(__dirname, '..', 'worker', '.admin-token
 const DRY = process.argv.includes('--dry');
 const maxImgIdx = process.argv.indexOf('--max-images');
 const MAX_IMAGES = maxImgIdx > -1 ? parseInt(process.argv[maxImgIdx + 1], 10) : 4;
+const kvLimitIdx = process.argv.indexOf('--kv-limit');
+const KV_LIMIT = kvLimitIdx > -1 ? parseInt(process.argv[kvLimitIdx + 1], 10) : Infinity;
 const IMAGES_PER_CALL = 12;   // 12 imgs * 3 subrequests = 36, safe under ~50
 const ITEMS_PER_CALL = 7;
 
@@ -54,10 +56,27 @@ for (const post of feed) {
     category: parsed.category,
     stock: parsed.stock,
     price: parsed.price || 0,
+    gender: parsed.gender || "",
     description: stripDashes(parsed.description),
     imageUrls: post.imageUrls.slice(0, MAX_IMAGES),
     takenAt: post.takenAt ? new Date(post.takenAt * 1000).toISOString() : null,
   });
+}
+
+// Apply KV write limit: trim seedItems from the END (oldest) to stay under quota.
+// Running twice seeds the rest (worker skips already-committed items).
+if (KV_LIMIT < Infinity) {
+  let runningWrites = 0;
+  let cutAt = 0;
+  for (let i = 0; i < seedItems.length; i++) {
+    runningWrites += seedItems[i].imageUrls.length * 2;
+    if (runningWrites > KV_LIMIT) { cutAt = i; break; }
+    cutAt = i + 1;
+  }
+  if (cutAt < seedItems.length) {
+    console.log(`KV limit ${KV_LIMIT}: trimming to ${cutAt} items (${seedItems.length - cutAt} deferred to next run)`);
+    seedItems.length = cutAt;
+  }
 }
 
 const totalImages = seedItems.reduce((s, it) => s + it.imageUrls.length, 0);

@@ -1652,3 +1652,52 @@ summary.manual-entry-divider:active .me-pill { transform: translateY(0); }
   .upgrade-card-cta .btn-admin.gold { text-align: center; }
   .upgrade-note { max-width: none; }
 }
+
+/* ===== Deliveries — items out on approval (2026-06-16) ===== */
+.dlv-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.dlv-head .dash-title { margin-bottom: 6px; }
+.dlv-head .pos-sub { max-width: 640px; }
+.dlv-summary { font-size: 13px; color: var(--ink-soft); margin: 6px 0 18px; font-weight: 600; }
+.dlv-subhead { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--gold-deep, var(--gold)); margin: 22px 0 12px; font-weight: 700; }
+.dlv-empty { font-size: 14px; color: var(--ink-faint, #9a9a9a); padding: 14px 0; }
+
+.dlv-card { border: 1px solid var(--line); border-radius: 14px; padding: 16px 18px; margin-bottom: 12px; background: var(--bg-card, #fff); }
+.dlv-card-out { border-left: 4px solid var(--gold); }
+.dlv-card-done { border-left: 4px solid var(--line); background: var(--surface); }
+.dlv-card-head { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 8px; }
+.dlv-card-head strong { font-size: 15.5px; color: var(--ink); }
+.dlv-when { font-size: 12px; color: var(--ink-faint, #9a9); }
+.dlv-items { list-style: none; padding: 0; margin: 0 0 8px; display: flex; flex-direction: column; gap: 3px; }
+.dlv-items li { font-size: 14px; color: var(--ink-soft); }
+.dlv-sz { color: var(--ink-faint, #9a9); font-size: 12.5px; }
+.dlv-note { font-size: 13px; color: var(--ink-soft); font-style: italic; margin-bottom: 10px; }
+.dlv-card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+.dlv-result { font-size: 14px; color: var(--ink-soft); margin: 4px 0; }
+.dlv-tag { display: inline-block; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; padding: 2px 8px; border-radius: 999px; margin-right: 6px; }
+.dlv-tag-bought { background: #e7f4ec; color: #1d7a45; }
+.dlv-tag-back { background: #f0ece0; color: var(--ink-soft); }
+
+/* Create-modal item lines */
+.dlv-lines { margin: 4px 0 8px; display: flex; flex-direction: column; gap: 8px; }
+.dlv-line { display: grid; grid-template-columns: 1fr auto auto auto; align-items: center; gap: 8px; background: var(--surface); border-radius: 10px; padding: 8px 10px; }
+.dlv-line-name { font-size: 14px; font-weight: 600; color: var(--ink); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.dlv-line-size { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; background: #fff; }
+.dlv-line-qty { width: 58px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; text-align: center; }
+.dlv-line-del { background: none; border: none; font-size: 20px; line-height: 1; color: #b00020; cursor: pointer; padding: 0 4px; }
+
+/* Settle modal */
+.dlv-settle-lines { display: flex; flex-direction: column; gap: 10px; margin: 4px 0 10px; }
+.dlv-settle-line { border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; }
+.dlv-settle-top { display: flex; justify-content: space-between; gap: 10px; margin-bottom: 8px; }
+.dlv-settle-meta { font-size: 12.5px; color: var(--ink-faint, #9a9); }
+.dlv-settle-controls { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.dlv-settle-controls label { font-size: 12px; color: var(--ink-soft); font-weight: 600; display: flex; align-items: center; gap: 6px; }
+.dlv-keep-qty, .dlv-keep-price { width: 76px; padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; font-size: 13px; text-align: center; }
+.dlv-ret-note { font-size: 12.5px; color: var(--gold-deep, var(--gold)); font-weight: 600; }
+.dlv-settle-foot { font-size: 14px; color: var(--ink); text-align: right; margin-top: 4px; }
+.dlv-settle-foot strong { font-size: 16px; }
+
+@media (max-width: 560px) {
+  .dlv-line { grid-template-columns: 1fr auto auto; grid-auto-rows: auto; }
+  .dlv-line-name { grid-column: 1 / -1; }
+}

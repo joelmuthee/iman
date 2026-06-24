@@ -9,7 +9,7 @@
 <meta name="theme-color" content="#11172a">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="styles.css?v=16">
+<link rel="stylesheet" href="styles.css?v=17">
 </head>
 <body style="background:var(--bg);">
 
@@ -70,6 +70,7 @@
   <nav class="admin-nav" id="adminNav">
     <a href="#igSyncDash" class="admin-nav-cta">⚡ Add stock from IG</a>
     <a href="#posDash" class="admin-nav-pos">🛒 Sell in store</a>
+    <a href="#deliveriesDash" class="admin-nav-dlv">📦 Deliveries <span class="admin-nav-count" id="navDlvCount"></span></a>
     <a href="#addForm">+ Add manually</a>
     <!-- Tier gate (Basic / Shopfront): the Sales, Inventory and Owed OVERVIEW
          dashboards are Shop Records (3k) features. Selling (POS, card Sell /
@@ -159,6 +160,24 @@
         <button id="posNewSaleBtn" class="btn-admin" type="button">New sale</button>
       </div>
     </div>
+  </section>
+
+  <!-- ====== DELIVERIES — items out on approval (home/office sell flow) ====== -->
+  <section class="dash" id="deliveriesDash">
+    <div class="dlv-head">
+      <div>
+        <h2 class="dash-title">📦 Deliveries</h2>
+        <p class="pos-sub">When an employee takes items to a customer's home or office. Stock is held aside while it's out, so you can't oversell it. When the customer decides, record what they kept. The rest comes back to stock; what they kept is recorded as a sale.</p>
+      </div>
+      <button class="btn-admin gold" id="dlvNewBtn" type="button">+ New delivery</button>
+    </div>
+    <div class="dlv-summary" id="dlvSummary"></div>
+
+    <h3 class="dlv-subhead">Out with customers</h3>
+    <div id="dlvOutList"></div>
+
+    <h3 class="dlv-subhead">Recently settled</h3>
+    <div id="dlvSettledList"></div>
   </section>
 
   <!-- ====== SALES DASHBOARD ====== -->
@@ -719,6 +738,61 @@
   </div>
 </div>
 
+<!-- NEW DELIVERY MODAL — log items an employee is taking out to a customer -->
+<div id="dlvModal" class="modal" style="display:none;">
+  <div class="modal-card">
+    <h3>New delivery</h3>
+    <p class="sub">Who is it going to, and what is the employee taking out? These items are held aside (out of stock) until the customer decides.</p>
+    <div class="field">
+      <label>Customer name</label>
+      <input id="dlvCustName" type="text" placeholder="e.g. Mary Wanjiru">
+    </div>
+    <div class="field">
+      <label>Customer phone <small style="font-weight:400;color:#999;">optional</small></label>
+      <input id="dlvCustPhone" type="tel" placeholder="2547…">
+    </div>
+    <div class="field">
+      <label>Taken out by <small style="font-weight:400;color:#999;">optional</small></label>
+      <input id="dlvStaff" type="text" placeholder="Which employee delivered it">
+    </div>
+    <div class="field">
+      <label>Add items the employee is taking</label>
+      <input id="dlvItemSearch" type="search" placeholder="Search by name…" autocomplete="off">
+      <div id="dlvItemResults" class="pos-results" style="display:none;"></div>
+    </div>
+    <div id="dlvLines" class="dlv-lines"></div>
+    <div class="field">
+      <label>Note <small style="font-weight:400;color:#999;">optional</small></label>
+      <input id="dlvNote" type="text" placeholder="Delivery address, anything to remember…">
+    </div>
+    <div class="admin-actions" style="margin-top:18px;">
+      <button class="btn-admin gold" id="dlvSaveBtn">Send out</button>
+      <button class="btn-admin danger" id="dlvCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<!-- SETTLE DELIVERY MODAL — record what the customer kept vs sent back -->
+<div id="dlvSettleModal" class="modal" style="display:none;">
+  <div class="modal-card">
+    <h3 id="dlvSettleTitle">What did they keep?</h3>
+    <p class="sub">Enter how many of each the customer kept. The rest goes back to stock. What they kept is recorded as a sale under their name.</p>
+    <div id="dlvSettleLines" class="dlv-settle-lines"></div>
+    <div class="field">
+      <label>How were you paid for what they kept?</label>
+      <div class="pos-pay" id="dlvSettlePay">
+        <button type="button" class="pos-pay-btn" data-pay="cash">💵 Cash</button>
+        <button type="button" class="pos-pay-btn active" data-pay="mpesa">📱 M-Pesa</button>
+      </div>
+    </div>
+    <div class="dlv-settle-foot">Sale total: <strong id="dlvSettleTotal">Ksh 0</strong></div>
+    <div class="admin-actions" style="margin-top:14px;">
+      <button class="btn-admin gold" id="dlvSettleConfirmBtn">Record it</button>
+      <button class="btn-admin danger" id="dlvSettleCancelBtn">Cancel</button>
+    </div>
+  </div>
+</div>
+
 <!-- BULK SELL MODAL — sell several items to one customer, details typed once -->
 <div id="bulkSellModal" class="modal" style="display:none;">
   <div class="modal-card">
@@ -968,6 +1042,6 @@
   </div>
 </div>
 
-<script src="admin.js?v=20260618loyalty"></script>
+<script src="admin.js?v=20260624deliveries"></script>
 </body>
 </html>

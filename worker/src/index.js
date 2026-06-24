@@ -835,6 +835,8 @@ export default {
       if (!admin && data.clients) delete data.clients;
       // Expenses are the owner's private books (ad spend, costs) — never public.
       if (!admin && data.expenses) delete data.expenses;
+      // Deliveries carry customer names/phones (on-approval runs) — owner-only.
+      if (!admin && data.deliveries) delete data.deliveries;
       return json(data, 200, admin ? { "Cache-Control": "no-store" } : { "Cache-Control": "public, max-age=10" });
     }
 
@@ -1050,6 +1052,9 @@ export default {
       if (Array.isArray(body.clients)) payload.clients = body.clients;
       // Operating expenses (ad spend, packaging, etc.) — admin-only records ledger.
       if (Array.isArray(body.expenses)) payload.expenses = body.expenses;
+      // Deliveries / on-approval runs (items out with a customer, pending pick) —
+      // admin-only; carries buyer PII so it's stripped from the public /api/bags.
+      if (Array.isArray(body.deliveries)) payload.deliveries = body.deliveries;
       await env.BAGS.put("data", JSON.stringify(payload));
       return json({ ok: true, count: body.bags.length, sets: payload.sets?.length || 0 });
     }

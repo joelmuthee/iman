@@ -8,6 +8,7 @@ let bags = [];
 let settings = {};
 let clients = []; // manually-added clients (server-synced); sale buyers are derived separately
 let expenses = []; // operating expenses (ad spend, packaging, etc.) — admin-only, server-synced
+let deliveries = []; // on-approval runs: items OUT with a customer, pending their pick — server-synced
 let editingId = null;
 let stagedImage = null; // { base64, ext, dataUrl }
 let pendingSaleId = null;
@@ -121,7 +122,7 @@ async function apiPublish() {
   const res = await fetch(`${API_BASE}/api/bulk`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${ADMIN_TOKEN}` },
-    body: JSON.stringify({ bags, settings, clients, expenses }),
+    body: JSON.stringify({ bags, settings, clients, expenses, deliveries }),
   });
   if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || `Save failed: ${res.status}`); }
 }
@@ -141,6 +142,7 @@ async function apiMutateAndPublish(mutate) {
   settings = json.settings || {};
   clients = Array.isArray(json.clients) ? json.clients : [];
   expenses = Array.isArray(json.expenses) ? json.expenses : [];
+  deliveries = Array.isArray(json.deliveries) ? json.deliveries : [];
   await mutate();
   await apiPublish();
 }
@@ -153,6 +155,7 @@ async function loadData() {
   settings = json.settings || {};
   clients = Array.isArray(json.clients) ? json.clients : [];
   expenses = Array.isArray(json.expenses) ? json.expenses : [];
+  deliveries = Array.isArray(json.deliveries) ? json.deliveries : [];
   accountSuspended = !!json.suspended;
 }
 
@@ -3113,6 +3116,8 @@ async function init() {
   renderClients();
   renderOwed();
   renderInsights();
+  initDeliveries();
+  renderDeliveries();
   loadReportConfig();
   initNavScrollSpy();
 }
@@ -3451,5 +3456,310 @@ document.getElementById('posCancelBtn')?.addEventListener('click', posReset);
 document.getElementById('posNewSaleBtn')?.addEventListener('click', posReset);
 document.getElementById('posPrintReceiptBtn')?.addEventListener('click', posPrintReceipt);
 document.getElementById('posImgReceiptBtn')?.addEventListener('click', posShareReceiptImage);
+
+/* ===== Deliveries — items OUT on approval (Veronica's home/office sell flow) =====
+   An employee takes a batch of items to a customer; the customer keeps some and
+   sends the rest back. Three states the owner wants to see: what's OUT (not a
+   sale yet), what was BOUGHT, what came BACK.
+   Accounting: taking items out RESERVES them (stock -= taken) so the catalogue
+   can't promise the same physical piece twice. Settling returns the unsold ones
+   (stock += returned) and records the kept ones as a normal sale (so they flow
+   into Sales / revenue / the customer's history). All state lives in the
+   server-synced `deliveries[]`, mutated through apiMutateAndPublish like sales. */
+let dlvDraft = [];          // [{ itemId, name, size, taken }] being built in the create modal
+let dlvSettleId = null;     // id of the delivery currently being settled
+let dlvSettleDraft = [];    // [{ itemId, name, size, taken, kept, unitPrice }]
+let dlvPayMethod = 'mpesa';
+
+function dlvFmtDate(iso) {
+  if (!iso) return '';
+  const d = new Date(iso);
+  if (isNaN(d)) return '';
+  return d.toLocaleDateString('en-GB', { day: 'numeric', month: 'short' }) +
+    ', ' + d.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+}
+function dlvInStockSizes(bag) {
+  return Object.entries(bag && bag.stock || {}).filter(([, q]) => q > 0);
+}
+function dlvAvail(itemId, size) {
+  const bag = bags.find(b => b.id === itemId);
+  return bag && bag.stock && bag.stock[size] != null ? Number(bag.stock[size]) : 0;
+}
+
+function openDeliveryModal() {
+  dlvDraft = [];
+  document.getElementById('dlvCustName').value = '';
+  document.getElementById('dlvCustPhone').value = '';
+  document.getElementById('dlvStaff').value = '';
+  document.getElementById('dlvNote').value = '';
+  document.getElementById('dlvItemSearch').value = '';
+  document.getElementById('dlvItemResults').style.display = 'none';
+  renderDlvLines();
+  document.getElementById('dlvModal').style.display = 'flex';
+  document.getElementById('dlvCustName').focus();
+}
+function closeDeliveryModal() { document.getElementById('dlvModal').style.display = 'none'; }
+
+function dlvRenderResults(q) {
+  const box = document.getElementById('dlvItemResults');
+  const query = (q || '').toLowerCase();
+  if (!query) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const matches = bags.filter(b => (b.name || '').toLowerCase().includes(query) && dlvInStockSizes(b).length).slice(0, 12);
+  box.innerHTML = matches.length ? matches.map(itemOptHTML).join('') : '<div class="client-item-empty">No items in stock match.</div>';
+  box.style.display = '';
+}
+function dlvAddItem(id) {
+  const bag = bags.find(b => b.id === id);
+  if (!bag) return;
+  const sizes = dlvInStockSizes(bag);
+  const firstSize = sizes.length ? sizes[0][0] : 'One size';
+  dlvDraft.push({ itemId: id, name: bag.name, size: firstSize, taken: 1 });
+  document.getElementById('dlvItemSearch').value = '';
+  document.getElementById('dlvItemResults').style.display = 'none';
+  renderDlvLines();
+}
+function renderDlvLines() {
+  const box = document.getElementById('dlvLines');
+  if (!dlvDraft.length) { box.innerHTML = '<div class="dlv-empty">No items added yet. Search above to add what the employee is taking out.</div>'; return; }
+  box.innerHTML = dlvDraft.map((ln, i) => {
+    const bag = bags.find(b => b.id === ln.itemId);
+    const sizes = dlvInStockSizes(bag);
+    const opts = (sizes.length ? sizes : [['One size', dlvAvail(ln.itemId, ln.size) || 0]])
+      .map(([sz, q]) => `<option value="${escapeHtml(sz)}" ${sz === ln.size ? 'selected' : ''}>${escapeHtml(sz)} (${q} in stock)</option>`).join('');
+    const avail = dlvAvail(ln.itemId, ln.size);
+    return `<div class="dlv-line" data-i="${i}">
+      <span class="dlv-line-name">${escapeHtml(ln.name)}</span>
+      <select class="dlv-line-size" data-i="${i}">${opts}</select>
+      <input class="dlv-line-qty" data-i="${i}" type="number" min="1" max="${avail}" value="${ln.taken}" inputmode="numeric">
+      <button type="button" class="dlv-line-del" data-i="${i}" title="Remove">×</button>
+    </div>`;
+  }).join('');
+}
+
+async function saveDelivery() {
+  const name = document.getElementById('dlvCustName').value.trim();
+  const phone = document.getElementById('dlvCustPhone').value.trim();
+  const staff = document.getElementById('dlvStaff').value.trim();
+  const note = document.getElementById('dlvNote').value.trim();
+  if (!name) { showToast('Add the customer name.'); return; }
+  if (!dlvDraft.length) { showToast('Add at least one item.'); return; }
+  // Validate against live stock
+  for (const ln of dlvDraft) {
+    ln.taken = Math.max(1, parseInt(ln.taken, 10) || 1);
+    if (ln.taken > dlvAvail(ln.itemId, ln.size)) {
+      showToast(`Only ${dlvAvail(ln.itemId, ln.size)} of ${ln.name} (${ln.size}) in stock.`); return;
+    }
+  }
+  const record = {
+    id: 'dlv_' + Date.now(),
+    createdAt: new Date().toISOString(),
+    customerName: name, customerPhone: phone, staff, note,
+    status: 'out', settledAt: null,
+    items: dlvDraft.map(ln => ({ itemId: ln.itemId, name: ln.name, size: ln.size, taken: ln.taken, kept: null, returned: null })),
+  };
+  try {
+    await apiMutateAndPublish(() => {
+      record.items.forEach(it => {
+        const bag = bags.find(b => b.id === it.itemId);
+        if (!bag) throw new Error(`"${it.name}" no longer exists — refresh admin`);
+        if (!bag.stock) bag.stock = {};
+        const have = Number(bag.stock[it.size] || 0);
+        if (it.taken > have) throw new Error(`Stock changed for ${it.name} (${it.size}) — refresh and retry`);
+        bag.stock[it.size] = have - it.taken; // reserve out
+      });
+      deliveries.unshift(record);
+    });
+    closeDeliveryModal();
+    renderDeliveries(); renderList(); renderInventory(); renderDashboard();
+    const n = record.items.reduce((s, x) => s + x.taken, 0);
+    showToast(`Delivery logged — ${n} item${n === 1 ? '' : 's'} out with ${name}.`);
+  } catch (err) { showToast('Error: ' + err.message); }
+}
+
+function openSettleModal(id) {
+  const d = deliveries.find(x => x.id === id);
+  if (!d) return;
+  dlvSettleId = id;
+  dlvPayMethod = 'mpesa';
+  dlvSettleDraft = d.items.map(it => {
+    const bag = bags.find(b => b.id === it.itemId);
+    return { itemId: it.itemId, name: it.name, size: it.size, taken: it.taken, kept: it.taken, unitPrice: bag ? (Number(bag.price) || 0) : 0 };
+  });
+  document.getElementById('dlvSettleTitle').textContent = `${d.customerName} — what did they keep?`;
+  document.querySelectorAll('#dlvSettlePay .pos-pay-btn').forEach(b => b.classList.toggle('active', b.dataset.pay === 'mpesa'));
+  renderSettleLines();
+  document.getElementById('dlvSettleModal').style.display = 'flex';
+}
+function closeSettleModal() { document.getElementById('dlvSettleModal').style.display = 'none'; dlvSettleId = null; }
+
+function renderSettleLines() {
+  const box = document.getElementById('dlvSettleLines');
+  box.innerHTML = dlvSettleDraft.map((ln, i) => {
+    const ret = Math.max(0, ln.taken - ln.kept);
+    return `<div class="dlv-settle-line" data-i="${i}">
+      <div class="dlv-settle-top"><span class="dlv-line-name">${escapeHtml(ln.name)}</span><span class="dlv-settle-meta">${escapeHtml(ln.size)} · took ${ln.taken}</span></div>
+      <div class="dlv-settle-controls">
+        <label>Kept <input class="dlv-keep-qty" data-i="${i}" type="number" min="0" max="${ln.taken}" value="${ln.kept}" inputmode="numeric"></label>
+        <label>Unit price <input class="dlv-keep-price" data-i="${i}" type="number" min="0" value="${ln.unitPrice}" inputmode="numeric"></label>
+        <span class="dlv-ret-note">${ret} back to shop</span>
+      </div>
+    </div>`;
+  }).join('');
+  const kept = dlvSettleDraft.reduce((s, l) => s + (l.kept * l.unitPrice), 0);
+  document.getElementById('dlvSettleTotal').textContent = fmtKsh(kept);
+}
+
+async function confirmSettle() {
+  const d = deliveries.find(x => x.id === dlvSettleId);
+  if (!d) { closeSettleModal(); return; }
+  for (const ln of dlvSettleDraft) {
+    ln.kept = Math.min(ln.taken, Math.max(0, parseInt(ln.kept, 10) || 0));
+    ln.unitPrice = Math.max(0, parseInt(ln.unitPrice, 10) || 0);
+  }
+  const nowIso = new Date().toISOString();
+  try {
+    await apiMutateAndPublish(() => {
+      const live = deliveries.find(x => x.id === dlvSettleId);
+      if (!live) throw new Error('Delivery no longer exists — refresh admin');
+      if (live.status === 'settled') throw new Error('This delivery was already settled');
+      dlvSettleDraft.forEach(ln => {
+        const returned = Math.max(0, ln.taken - ln.kept);
+        const bag = bags.find(b => b.id === ln.itemId);
+        if (bag) {
+          if (!bag.stock) bag.stock = {};
+          if (returned > 0) bag.stock[ln.size] = Number(bag.stock[ln.size] || 0) + returned; // back to shelf
+          if (ln.kept > 0) {
+            if (!bag.sales) bag.sales = [];
+            bag.sales.push({
+              size: ln.size, qty: ln.kept, salePrice: ln.unitPrice,
+              amountPaid: ln.unitPrice * ln.kept, paymentMethod: dlvPayMethod,
+              channel: 'delivery',
+              buyerName: live.customerName || '', buyerPhone: live.customerPhone || '',
+              notes: 'Delivery to ' + (live.customerName || 'customer'),
+              soldAt: nowIso,
+            });
+          }
+        }
+        const recIt = live.items.find(it => it.itemId === ln.itemId && it.size === ln.size && it.kept === null);
+        if (recIt) { recIt.kept = ln.kept; recIt.returned = returned; }
+      });
+      live.status = 'settled';
+      live.settledAt = nowIso;
+    });
+    closeSettleModal();
+    renderDeliveries(); renderList(); renderInventory(); renderDashboard();
+    if (typeof renderClients === 'function') renderClients();
+    showToast('Delivery settled — kept items recorded as a sale.');
+  } catch (err) { showToast('Error: ' + err.message); }
+}
+
+async function cancelDelivery(id) {
+  const d = deliveries.find(x => x.id === id);
+  if (!d) return;
+  if (!await confirmAction(`Cancel this delivery to ${d.customerName}? Everything goes back to stock and nothing is recorded as sold.`, 'Yes, all came back')) return;
+  try {
+    await apiMutateAndPublish(() => {
+      const live = deliveries.find(x => x.id === id);
+      if (!live || live.status === 'settled') throw new Error('Delivery already settled or gone — refresh admin');
+      live.items.forEach(it => {
+        const bag = bags.find(b => b.id === it.itemId);
+        if (bag) { if (!bag.stock) bag.stock = {}; bag.stock[it.size] = Number(bag.stock[it.size] || 0) + it.taken; }
+      });
+      const idx = deliveries.findIndex(x => x.id === id);
+      if (idx > -1) deliveries.splice(idx, 1);
+    });
+    renderDeliveries(); renderList(); renderInventory(); renderDashboard();
+    showToast('Delivery cancelled — all items back in stock.');
+  } catch (err) { showToast('Error: ' + err.message); }
+}
+
+function renderDeliveries() {
+  const out = (deliveries || []).filter(d => d.status === 'out');
+  const settled = (deliveries || []).filter(d => d.status === 'settled')
+    .sort((a, b) => (b.settledAt || '').localeCompare(a.settledAt || '')).slice(0, 20);
+
+  const navCount = document.getElementById('navDlvCount');
+  if (navCount) navCount.textContent = out.length ? out.length : '';
+
+  const sumEl = document.getElementById('dlvSummary');
+  if (sumEl) {
+    const itemsOut = out.reduce((s, d) => s + d.items.reduce((t, it) => t + it.taken, 0), 0);
+    sumEl.textContent = out.length
+      ? `${out.length} deliver${out.length === 1 ? 'y' : 'ies'} out · ${itemsOut} item${itemsOut === 1 ? '' : 's'} with customers`
+      : 'Nothing out right now.';
+  }
+
+  const outEl = document.getElementById('dlvOutList');
+  if (outEl) {
+    outEl.innerHTML = out.length ? out.map(d => {
+      const lines = d.items.map(it => `<li>${it.taken}× ${escapeHtml(it.name)} <span class="dlv-sz">(${escapeHtml(it.size)})</span></li>`).join('');
+      const ph = d.customerPhone ? ` · <span class="mono">${escapeHtml(d.customerPhone)}</span>` : '';
+      const st = d.staff ? ` · taken by ${escapeHtml(d.staff)}` : '';
+      return `<div class="dlv-card dlv-card-out">
+        <div class="dlv-card-head">
+          <div><strong>${escapeHtml(d.customerName)}</strong>${ph}</div>
+          <div class="dlv-when">${dlvFmtDate(d.createdAt)}${st}</div>
+        </div>
+        <ul class="dlv-items">${lines}</ul>
+        ${d.note ? `<div class="dlv-note">${escapeHtml(d.note)}</div>` : ''}
+        <div class="dlv-card-actions">
+          <button class="btn-admin gold" data-dlv-settle="${d.id}">Customer decided →</button>
+          <button class="btn-admin" data-dlv-cancel="${d.id}">All came back</button>
+        </div>
+      </div>`;
+    }).join('') : '<div class="dlv-empty">No deliveries out. Tap “New delivery” when an employee takes items to a customer.</div>';
+  }
+
+  const setEl = document.getElementById('dlvSettledList');
+  if (setEl) {
+    setEl.innerHTML = settled.length ? settled.map(d => {
+      const bought = d.items.filter(it => it.kept > 0).map(it => `${it.kept}× ${escapeHtml(it.name)} <span class="dlv-sz">(${escapeHtml(it.size)})</span>`);
+      const back = d.items.filter(it => it.returned > 0).map(it => `${it.returned}× ${escapeHtml(it.name)} <span class="dlv-sz">(${escapeHtml(it.size)})</span>`);
+      return `<div class="dlv-card dlv-card-done">
+        <div class="dlv-card-head"><div><strong>${escapeHtml(d.customerName)}</strong></div><div class="dlv-when">${dlvFmtDate(d.settledAt)}</div></div>
+        <div class="dlv-result"><span class="dlv-tag dlv-tag-bought">Bought</span> ${bought.length ? bought.join(', ') : '<em>nothing</em>'}</div>
+        <div class="dlv-result"><span class="dlv-tag dlv-tag-back">Back</span> ${back.length ? back.join(', ') : '<em>nothing</em>'}</div>
+      </div>`;
+    }).join('') : '<div class="dlv-empty">Settled deliveries will show here, with what was bought and what came back.</div>';
+  }
+}
+
+function initDeliveries() {
+  document.getElementById('dlvNewBtn')?.addEventListener('click', openDeliveryModal);
+  document.getElementById('dlvCancelBtn')?.addEventListener('click', closeDeliveryModal);
+  document.getElementById('dlvSaveBtn')?.addEventListener('click', saveDelivery);
+  const search = document.getElementById('dlvItemSearch');
+  if (search) search.addEventListener('input', e => dlvRenderResults(e.target.value));
+  document.getElementById('dlvItemResults')?.addEventListener('click', e => {
+    const opt = e.target.closest('.client-item-opt'); if (opt) dlvAddItem(opt.dataset.id);
+  });
+  document.getElementById('dlvLines')?.addEventListener('input', e => {
+    const i = +e.target.dataset.i;
+    if (e.target.classList.contains('dlv-line-size')) { dlvDraft[i].size = e.target.value; renderDlvLines(); }
+    else if (e.target.classList.contains('dlv-line-qty')) { dlvDraft[i].taken = e.target.value; }
+  });
+  document.getElementById('dlvLines')?.addEventListener('click', e => {
+    const del = e.target.closest('.dlv-line-del'); if (del) { dlvDraft.splice(+del.dataset.i, 1); renderDlvLines(); }
+  });
+  // Settle modal
+  document.getElementById('dlvSettleCancelBtn')?.addEventListener('click', closeSettleModal);
+  document.getElementById('dlvSettleConfirmBtn')?.addEventListener('click', confirmSettle);
+  document.getElementById('dlvSettleLines')?.addEventListener('input', e => {
+    const i = +e.target.dataset.i;
+    if (e.target.classList.contains('dlv-keep-qty')) dlvSettleDraft[i].kept = Math.min(dlvSettleDraft[i].taken, Math.max(0, parseInt(e.target.value, 10) || 0));
+    else if (e.target.classList.contains('dlv-keep-price')) dlvSettleDraft[i].unitPrice = Math.max(0, parseInt(e.target.value, 10) || 0);
+    renderSettleLines();
+  });
+  document.getElementById('dlvSettlePay')?.addEventListener('click', e => {
+    const b = e.target.closest('.pos-pay-btn'); if (!b) return;
+    dlvPayMethod = b.dataset.pay;
+    document.querySelectorAll('#dlvSettlePay .pos-pay-btn').forEach(x => x.classList.toggle('active', x === b));
+  });
+  // List actions (event delegation on the section)
+  document.getElementById('deliveriesDash')?.addEventListener('click', e => {
+    const s = e.target.closest('[data-dlv-settle]'); if (s) { openSettleModal(s.dataset.dlvSettle); return; }
+    const c = e.target.closest('[data-dlv-cancel]'); if (c) { cancelDelivery(c.dataset.dlvCancel); return; }
+  });
+}
 
 checkAuth();

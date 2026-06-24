@@ -851,20 +851,34 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
 
     const IG_SVG = '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line></svg>';
 
-    const css = ('@keyframes imSusFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}'
-      + '#suspendedOverlay{position:fixed;inset:0;z-index:99999;background:radial-gradient(ellipse at top,#232a40 0%,#11172a 65%);color:#dde2ee;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;font-family:Inter,system-ui,-apple-system,sans-serif;animation:imSusFade 0.65s ease both;}'
-      + '#suspendedOverlay .im-logo{width:auto;height:90px;max-width:280px;object-fit:contain;margin-bottom:26px;filter:drop-shadow(0 0 24px rgba(110,117,133,0.35));}'
-      + '#suspendedOverlay .im-name{font-family:\'Cormorant Garamond\',Georgia,serif;font-size:34px;color:#b8bcc5;letter-spacing:2.5px;font-weight:500;line-height:1;margin-bottom:8px;}'
-      + '#suspendedOverlay .im-tag{font-size:12px;color:#6e7585;letter-spacing:2px;text-transform:uppercase;margin-bottom:30px;opacity:0.9;}'
-      + '#suspendedOverlay .im-rule{width:54px;height:1px;background:linear-gradient(90deg,transparent,#6e7585,transparent);margin-bottom:30px;}'
-      + '#suspendedOverlay .im-head{font-family:\'Cormorant Garamond\',Georgia,serif;font-weight:500;font-size:clamp(30px,5vw,44px);margin:0 0 16px;color:#e8dcc4;line-height:1.15;}'
-      + '#suspendedOverlay .im-body{font-size:16px;max-width:460px;line-height:1.65;opacity:0.82;margin:0 0 14px;}'
-      + '#suspendedOverlay .im-offer{font-size:16px;max-width:460px;line-height:1.6;margin:0 0 30px;color:#b8bcc5;}'
-      + '#suspendedOverlay .im-offer b{color:#fff;font-weight:700;}'
-      + '#suspendedOverlay .im-ig{display:inline-flex;align-items:center;gap:10px;background:#6e7585;color:#11172a;padding:14px 30px;border-radius:999px;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:0.3px;box-shadow:0 6px 24px rgba(110,117,133,0.3);transition:transform 0.2s ease,box-shadow 0.2s ease,background 0.2s ease;}'
-      + '#suspendedOverlay .im-ig:hover{background:#b8bcc5;transform:translateY(-1px);box-shadow:0 8px 28px rgba(110,117,133,0.42);}'
-      + '@media (max-width:480px){#suspendedOverlay .im-logo{height:72px;max-width:220px;margin-bottom:22px;}#suspendedOverlay .im-name{font-size:28px;letter-spacing:2px;}#suspendedOverlay .im-tag{font-size:11px;margin-bottom:24px;}}'
-    );
+    // Palette-aware: pull the shop's OWN colours from :root so the offline page
+    // mirrors the real storefront (Iman is a CREAM site, not dark). Fallbacks
+    // keep it self-contained if styles.css failed to load. See CATALOG-STANDARDS
+    // → billing kill-switch → "PALETTE-DRIVEN, NOT HARDCODED".
+    const _rs = getComputedStyle(document.documentElement);
+    const _v = (n, fb) => (_rs.getPropertyValue(n).trim() || fb);
+    const BG = _v('--bg', '#faf6ee');
+    const SURFACE = _v('--surface', BG);
+    const INK = _v('--ink', '#1a2238');
+    const INK_SOFT = _v('--ink-soft', INK);
+    const ACCENT = _v('--gold', '#6e7585');
+    const ACCENT_D = _v('--gold-deep', ACCENT);
+    const _lum = (h) => { const c = h.charAt(0) === '#' ? h.slice(1) : h; if (c.length < 6) return 128; return 0.299 * parseInt(c.substr(0, 2), 16) + 0.587 * parseInt(c.substr(2, 2), 16) + 0.114 * parseInt(c.substr(4, 2), 16); };
+    const ON_ACCENT = _lum(ACCENT) > 140 ? INK : '#fff';
+
+    const css = `@keyframes imSusFade{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+#suspendedOverlay{position:fixed;inset:0;z-index:99999;background:radial-gradient(ellipse at top,${SURFACE} 0%,${BG} 72%);color:${INK_SOFT};display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px 24px;font-family:Inter,system-ui,-apple-system,sans-serif;animation:imSusFade 0.65s ease both;}
+#suspendedOverlay .im-logo{width:auto;height:90px;max-width:280px;object-fit:contain;margin-bottom:26px;filter:drop-shadow(0 6px 16px rgba(26,34,56,0.14));}
+#suspendedOverlay .im-name{font-family:'Cormorant Garamond',Georgia,serif;font-size:34px;color:${INK};letter-spacing:2.5px;font-weight:600;line-height:1;margin-bottom:8px;}
+#suspendedOverlay .im-tag{font-size:12px;color:${ACCENT_D};letter-spacing:2px;text-transform:uppercase;margin-bottom:30px;opacity:0.95;}
+#suspendedOverlay .im-rule{width:54px;height:1px;background:linear-gradient(90deg,transparent,${ACCENT},transparent);margin-bottom:30px;}
+#suspendedOverlay .im-head{font-family:'Cormorant Garamond',Georgia,serif;font-weight:600;font-size:clamp(30px,5vw,44px);margin:0 0 16px;color:${INK};line-height:1.15;}
+#suspendedOverlay .im-body{font-size:16px;max-width:460px;line-height:1.65;opacity:0.9;margin:0 0 14px;}
+#suspendedOverlay .im-offer{font-size:16px;max-width:460px;line-height:1.6;margin:0 0 30px;color:${INK_SOFT};}
+#suspendedOverlay .im-offer b{color:${INK};font-weight:800;}
+#suspendedOverlay .im-ig{display:inline-flex;align-items:center;gap:10px;background:${ACCENT};color:${ON_ACCENT};padding:14px 30px;border-radius:999px;text-decoration:none;font-weight:600;font-size:15px;letter-spacing:0.3px;box-shadow:0 6px 24px rgba(0,0,0,0.16);transition:transform 0.2s ease,box-shadow 0.2s ease,background 0.2s ease;}
+#suspendedOverlay .im-ig:hover{background:${ACCENT_D};transform:translateY(-1px);box-shadow:0 10px 28px rgba(0,0,0,0.22);}
+@media (max-width:480px){#suspendedOverlay .im-logo{height:72px;max-width:220px;margin-bottom:22px;}#suspendedOverlay .im-name{font-size:28px;letter-spacing:2px;}#suspendedOverlay .im-tag{font-size:11px;margin-bottom:24px;}}`;
     const styleTag = document.createElement('style');
     styleTag.textContent = css;
     document.head.appendChild(styleTag);
