@@ -162,25 +162,51 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
   function effectivePrice(item) { return isOnSale(item) ? Number(item.salePrice) : Number(item.price || 0); }
   function discountPct(item) { return Math.round((1 - Number(item.salePrice) / Number(item.price)) * 100); }
 
-  function enquireBody(item, soldOut, selectedSize) {
+  // Optional colour variants — a plain list of available colours per item.
+  function itemColors(item) {
+    if (!Array.isArray(item.colors)) return [];
+    return item.colors.map(c => String(c).trim()).filter(Boolean);
+  }
+  // Per-colour × size stock (the accurate inventory model). When present, the
+  // size chips follow the chosen colour and sold-out colours are disabled.
+  function itemHasColorStock(item) {
+    return Array.isArray(item.colors) && item.colors.length > 0 && item.stockByColor && typeof item.stockByColor === 'object';
+  }
+  function colorAvailSizes(item, color) {
+    return Object.entries((item.stockByColor || {})[color] || {})
+      .filter(([, q]) => (q || 0) > 0).map(([s]) => s).filter(s => s !== 'One Size').sort(sortSize);
+  }
+  function colorInStock(item, color) {
+    return Object.values((item.stockByColor || {})[color] || {}).some(q => (q || 0) > 0);
+  }
+  function sizeChipButtons(sizes) {
+    return sizes.map(s => `<button type="button" class="size-chip" data-size="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join('')
+      + (sizes.length > 1 ? '<span class="size-hint">Pick a size first</span>' : '');
+  }
+
+  function enquireBody(item, soldOut, selectedSize, selectedColor) {
     const avail = availSizes(item);
+    const cols = itemColors(item);
     let sizePart = '';
+    let colorPart = '';
     if (!soldOut) {
       if (selectedSize) sizePart = ` (size ${selectedSize})`;
       else if (avail.length === 1) sizePart = ` (size ${avail[0]})`;
       // multi-size with nothing selected → no size in body; click handler blocks before reaching here
+      if (selectedColor) colorPart = ` in ${selectedColor}`;
+      else if (cols.length === 1) colorPart = ` in ${cols[0]}`;
     }
     const pricePart = isOnSale(item)
       ? ` (on sale ${fmtPrice(item.salePrice)}, was ${fmtPrice(item.price)})`
       : (item.price > 0 ? ` (${fmtPrice(item.price)})` : '');
     return soldOut
       ? `Hi Iman High Street! I saw *${item.name}* is sold out. Will it be back in stock? I'd love to reserve one.`
-      : `Hi Iman High Street! I'd like to check availability of *${item.name}*${sizePart}${pricePart} from your catalog.`;
+      : `Hi Iman High Street! I'd like to check availability of *${item.name}*${colorPart}${sizePart}${pricePart} from your catalog.`;
   }
 
-  function whatsappLink(item, soldOut, selectedSize) {
+  function whatsappLink(item, soldOut, selectedSize, selectedColor) {
     const phone = settings.whatsappNumber || '254720961246';
-    const body = enquireBody(item, soldOut, selectedSize);
+    const body = enquireBody(item, soldOut, selectedSize, selectedColor);
     // Append the item's /p/<id> share page — WhatsApp previews it as a card with the
     // product photo + name + price. Still opens straight to WhatsApp (no app picker).
     const shareUrl = item.id ? `${API_BASE}/p/${encodeURIComponent(item.id)}` : '';
@@ -409,9 +435,19 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
       const onSale = isOnSale(item);
       const avail = availSizes(item);
       const pickRequired = !soldOut && avail.length > 1;
-      const sizesHtml = avail.length
-        ? `<div class="size-chips${pickRequired ? ' pickable' : ''}">${avail.map(s => `<button type="button" class="size-chip" data-size="${escapeHtml(s)}">${escapeHtml(s)}</button>`).join('')}${pickRequired ? '<span class="size-hint">Pick a size first</span>' : ''}</div>`
+      const cols = itemColors(item);
+      const colorStock = itemHasColorStock(item);
+      const colorsHtml = (!soldOut && cols.length)
+        ? `<div class="color-chips"><span class="color-label">Colour:</span>${cols.map(c => {
+            const out = colorStock && !colorInStock(item, c);
+            return `<button type="button" class="color-chip${out ? ' soldout' : ''}" data-color="${escapeHtml(c)}"${out ? ' disabled' : ''}>${escapeHtml(c)}${out ? ' · sold out' : ''}</button>`;
+          }).join('')}</div>${colorStock ? '<p class="color-pick-hint">Pick a colour to see sizes</p>' : ''}`
         : '';
+      const sizesHtml = colorStock
+        ? '<div class="size-chips pickable" data-color-driven="1"></div>'
+        : (avail.length
+          ? `<div class="size-chips${pickRequired ? ' pickable' : ''}">${sizeChipButtons(avail)}</div>`
+          : '');
       const catBadge = item.category ? `<span class="badge-cat">${escapeHtml(item.category)}</span>` : '';
       const isNewItem = isNew(item);
       const totalUnits = totalStock(item);
@@ -442,6 +478,7 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
         <div class="card-body">
           <h3 class="card-title">${escapeHtml(item.name)}</h3>
           <p class="card-desc">${escapeHtml(item.description || '')}</p>
+          ${colorsHtml}
           ${sizesHtml}
           <div class="card-price-row">
             ${onSale
@@ -622,6 +659,29 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
       chipsRow?.classList.remove('prompted');
       return;
     }
+    // Colour-chip click — toggle select (single per card), deselect siblings
+    const colorChip = e.target.closest('.color-chip[data-color]');
+    if (colorChip) {
+      e.preventDefault(); e.stopPropagation();
+      if (colorChip.disabled) return;
+      const card = colorChip.closest('.card');
+      const wasSel = colorChip.classList.contains('selected');
+      card.querySelectorAll('.color-chip').forEach(c => c.classList.remove('selected'));
+      if (!wasSel) colorChip.classList.add('selected');
+      // Colour-stock items: rebuild the size chips for the chosen colour.
+      const sizeWrap = card.querySelector('.size-chips[data-color-driven]');
+      if (sizeWrap) {
+        const wrap = card.querySelector('[data-id]');
+        const item = wrap && items.find(i => i.id === wrap.dataset.id);
+        if (item) {
+          sizeWrap.classList.remove('prompted', 'shake');
+          sizeWrap.innerHTML = (!wasSel) ? sizeChipButtons(colorAvailSizes(item, colorChip.dataset.color)) : '';
+          const hint = card.querySelector('.color-pick-hint');
+          if (hint) hint.style.display = (!wasSel) ? 'none' : '';
+        }
+      }
+      return;
+    }
     // Enquire click — enforce size pick when needed
     const enquire = e.target.closest('.btn-card.primary');
     if (enquire) {
@@ -633,8 +693,25 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
       if (!item) return;
       const soldOut = isSoldOut(item);
       const avail = availSizes(item);
-      // Require size selection when multiple sizes exist and item isn't sold out
-      if (!soldOut && avail.length > 1) {
+      // Colour-stock items: require a colour first, then a size (from that colour).
+      if (!soldOut && itemHasColorStock(item)) {
+        if (!card.querySelector('.color-chip.selected')) {
+          e.preventDefault();
+          showToast('Pick a colour first');
+          const cc = card.querySelector('.color-chips');
+          cc?.classList.add('shake'); setTimeout(() => cc?.classList.remove('shake'), 600);
+          return;
+        }
+        const sizeChips = card.querySelectorAll('.size-chips .size-chip');
+        if (sizeChips.length > 1 && !card.querySelector('.size-chip.selected')) {
+          e.preventDefault();
+          showToast('Pick your size first to continue');
+          const chips = card.querySelector('.size-chips');
+          chips?.classList.add('prompted'); chips?.classList.add('shake');
+          setTimeout(() => chips?.classList.remove('shake'), 600);
+          return;
+        }
+      } else if (!soldOut && avail.length > 1) {
         const selected = card.querySelector('.size-chip.selected');
         if (!selected) {
           e.preventDefault();
@@ -645,8 +722,13 @@ const API_BASE = 'https://iman-high-street-api.stawisystems.workers.dev';
           setTimeout(() => chips?.classList.remove('shake'), 600);
           return;
         }
-        // Override the href with the size-specific URL
-        enquire.href = whatsappLink(item, false, selected.dataset.size);
+      }
+      // Rebuild the WhatsApp link with whatever size + colour the buyer picked.
+      // Colour is optional (not gated) — included only if selected.
+      if (!soldOut) {
+        const selSizeEl = card.querySelector('.size-chip.selected');
+        const selColorEl = card.querySelector('.color-chip.selected');
+        enquire.href = whatsappLink(item, false, selSizeEl ? selSizeEl.dataset.size : null, selColorEl ? selColorEl.dataset.color : null);
       }
       track('itemEnquiries', id);
       gaEvent('enquire', { item_id: id });
