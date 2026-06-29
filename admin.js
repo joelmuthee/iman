@@ -634,14 +634,35 @@ document.getElementById('manualEntryDivider')?.addEventListener('click', (e) => 
   if (manualEntry) manualEntry.open = !manualEntry.open;
 });
 
-// Mobile-safe collapsible dashboard sections (WhatsApp Marketing, Expenses):
-// JS-driven toggle + nav-link auto-open, never native <summary> click handling.
-[['broadcastCollapse', 'broadcastDash'], ['expensesCollapse', 'expensesDash']].forEach(([colId, dashId]) => {
-  const col = document.getElementById(colId);
-  const summary = col?.querySelector('summary.dash-summary');
-  if (summary) summary.addEventListener('click', (e) => { e.preventDefault(); col.open = !col.open; });
-  document.querySelector(`.admin-nav a[href="#${dashId}"]`)?.addEventListener('click', () => { if (col) col.open = true; });
-});
+// Make EVERY dashboard section collapsible: click its title to fold/unfold,
+// state remembered per-section in localStorage (default expanded). Mobile-safe
+// (plain class toggle, no native <details>). Collapsing hides all of a section's
+// children except the first (its title/header row). A nav-link click expands its
+// target so you never scroll to a folded section.
+function initCollapsibleDashes() {
+  const KEY = 'imanDashFold';
+  let state = {};
+  try { state = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+  document.querySelectorAll('section.dash').forEach(sec => {
+    if (!sec.id) return;
+    const title = sec.querySelector('.dash-title');
+    if (!title) return;
+    title.classList.add('dash-foldable');
+    if (state[sec.id]) sec.classList.add('collapsed');
+    title.addEventListener('click', () => {
+      sec.classList.toggle('collapsed');
+      state[sec.id] = sec.classList.contains('collapsed');
+      save();
+    });
+  });
+  document.querySelectorAll('.admin-nav a[href^="#"]').forEach(a => {
+    a.addEventListener('click', () => {
+      const sec = document.getElementById(a.getAttribute('href').slice(1));
+      if (sec && sec.classList.contains('collapsed')) { sec.classList.remove('collapsed'); state[sec.id] = false; save(); }
+    });
+  });
+}
 
 // ====== AI DESCRIPTION ======
 document.getElementById('aiBtn').addEventListener('click', () => {
@@ -3350,6 +3371,7 @@ async function init() {
   initDeliveries();
   renderDeliveries();
   loadReportConfig();
+  initCollapsibleDashes();
   initNavScrollSpy();
 }
 
